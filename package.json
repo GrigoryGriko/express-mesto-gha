@@ -1,0 +1,48 @@
+{
+  "name": "express-mesto-gha",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@testing-library/jest-dom": "^5.16.5",
+    "@testing-library/react": "^13.3.0",
+    "@testing-library/user-event": "^13.5.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-airbnb-base": "^0.0.1-security",
+    "eslint-plugin-import": "^2.26.0",
+    "express": "^4.18.2",
+    "web-vitals": "^2.1.4"
+  },
+  "scripts": {
+    "start": "nodemon app.js",
+    "lint": "npx eslint ."
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "eslint": "^8.26.0",
+    "nodemon": "^2.0.20"
+  },
+  "description": "[![Tests](../../actions/workflows/tests-13-sprint.yml/badge.svg)](../../actions/workflows/tests-13-sprint.yml) [![Tests](../../actions/workflows/tests-14-sprint.yml/badge.svg)](../../actions/workflows/tests-14-sprint.yml)\r # Проект Mesto фронтенд + бэкенд",
+  "main": ".eslintrc.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GrigoryGriko/express-mesto-gha.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/GrigoryGriko/express-mesto-gha/issues"
+  },
+  "homepage": "https://github.com/GrigoryGriko/express-mesto-gha#readme"
+}
