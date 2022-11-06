@@ -13,7 +13,8 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "nodemon app.js",
+    "start": "node app.js",
+    "dev": "nodemon app.js",
     "lint": "npx eslint ."
   },
   "browserslist": {
