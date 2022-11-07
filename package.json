@@ -10,6 +10,7 @@
     "eslint-plugin-airbnb-base": "^0.0.1-security",
     "eslint-plugin-import": "^2.26.0",
     "express": "^4.18.2",
+    "mongoose": "^6.7.1",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
