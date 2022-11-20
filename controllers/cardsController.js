@@ -10,13 +10,18 @@ module.exports.getAllCardsController = (req, res) => {
 module.exports.createCardController = (req, res) => {
   const { name, link } = req.body;
 
-  Card.create({ name, link })
+  console.dir(req.user);
+
+  Card.create({ name, link, owner: req.user._id})
     .then(card => res.send({ data: card }))
-    .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
+    .catch((err) => {
+      console.dir(err);
+      res.status(500).send({ message: 'Произошла ошибка' })
+    });
 }
 
 module.exports.deleteCardByIdController = (req, res) => {
   Card.remove({})
-    .then(cards => res.send({ data: cards }))
+    .then(card => res.send({ data: card }))
     .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
 }
