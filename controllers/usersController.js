@@ -8,12 +8,13 @@ module.exports.getAllUsersController = (req, res) => {
 }
 
 module.exports.getUserByIdController = (req, res) => {
-  User.find({})
+  console.log(req.params.userId);
+  User.find({ _id: req.params.userId })
     .then(users => {
-      if (!users[req.params.id]) {
+      if (!users[req.params.userId]) {
         res.send({ error: 'Такого пользователя нет' });
       }
-      res.send(users[req.params.id]);
+      res.send(users[req.params.userId]);
     })
     .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
 }
