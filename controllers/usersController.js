@@ -44,3 +44,36 @@ module.exports.updateAvatarController = (req, res) => {
     .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
 }
 /*----------------------*/
+
+module.exports.updateProfileController = (req, res) => {
+  const { name, about } = req.body;
+  User.findByIdAndUpdate(
+    req.user._id,
+    { 
+      name: name,
+      about: about
+    },
+
+    { 
+      new: true,
+      runValidators: true
+    }
+  )
+    .then(card => res.send({ data: card }))
+    .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
+}
+
+module.exports.updateAvatarController = (req, res) => {
+  const avatar = req.body;
+  User.findByIdAndUpdate(
+    req.user._id,
+    { avatar: avatar},
+
+    { 
+      new: true,
+      runValidators: true
+    }
+  )
+    .then(card => res.send({ data: card }))
+    .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
+}
