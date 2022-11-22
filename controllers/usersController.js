@@ -27,24 +27,6 @@ module.exports.createUserController = (req, res) => {
     .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
 }
 
-/*----------------------*/
-module.exports.updateProfileController = (req, res) => {
-  const { name, about, avatar } = req.body;
-
-  User.create({ name, about, avatar })
-    .then(user => res.send({ data: user }))
-    .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
-}
-
-module.exports.updateAvatarController = (req, res) => {
-  const { name, about, avatar } = req.body;
-
-  User.create({ name, about, avatar })
-    .then(user => res.send({ data: user }))
-    .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
-}
-/*----------------------*/
-
 module.exports.updateProfileController = (req, res) => {
   const { name, about } = req.body;
   User.findByIdAndUpdate(
@@ -59,7 +41,7 @@ module.exports.updateProfileController = (req, res) => {
       runValidators: true
     }
   )
-    .then(card => res.send({ data: card }))
+    .then(user => res.send({ data: user }))
     .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
 }
 
@@ -74,6 +56,6 @@ module.exports.updateAvatarController = (req, res) => {
       runValidators: true
     }
   )
-    .then(card => res.send({ data: card }))
+    .then(user => res.send({ data: user }))
     .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
 }
