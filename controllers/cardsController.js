@@ -18,7 +18,7 @@ module.exports.createCardController = (req, res) => {
 }
 
 module.exports.deleteCardByIdController = (req, res) => {
-  Card.remove({})
+  Card.findByIdAndRemove(req.params.cardId)
     .then(card => res.send({ data: card }))
     .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
 }
