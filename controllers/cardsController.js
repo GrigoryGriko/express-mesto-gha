@@ -4,7 +4,10 @@ const Card = require('../models/card');
 module.exports.getAllCardsController = (req, res) => {
   Card.find({})
     .then(cards => res.send({ data: cards }))
-    .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
+    .catch((err) => {
+      if (err.name === 'ValidationError') return res.status(400).send({ message: 'Переданы некорректные данные при создании карточки' });
+      else  return res.status(500).send({ message: 'Произошла ошибка' });
+    });
 }
 
 module.exports.createCardController = (req, res) => {
@@ -13,14 +16,17 @@ module.exports.createCardController = (req, res) => {
   Card.create({ name, link, owner: req.user._id})
     .then(card => res.send({ data: card }))
     .catch((err) => {
-      res.status(500).send({ message: 'Произошла ошибка' })
+      if (err.name === 'ValidationError') return res.status(400).send({ message: 'Переданы некорректные данные при создании карточки' });
+      else  return res.status(500).send({ message: 'Произошла ошибка' });
     });
 }
 
 module.exports.deleteCardByIdController = (req, res) => {
   Card.findByIdAndRemove(req.params.cardId)
     .then(card => res.send({ data: card }))
-    .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
+    .catch((err) => {
+      if (err.name === 'CastError') return res.status(404).send({ message: 'Карточка с указанным _id не найдена' });
+    });
 }
 
 module.exports.likeCardController = (req, res) => {
@@ -30,7 +36,11 @@ module.exports.likeCardController = (req, res) => {
     { new: true },
   )
     .then(card => res.send({ data: card }))
-    .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
+    .catch((err) => {
+      if (err.name === 'ValidationError') return res.status(400).send({ message: 'Переданы некорректные данные для постановки лайка' });
+      else if (err.name === 'CastError') return res.status(404).send({ message: 'Передан несуществующий _id карточки' });
+      else  return res.status(500).send({ message: 'Произошла ошибка' });
+    });
 }
 
 module.exports.dislikeCardController = (req, res) => {
@@ -40,5 +50,9 @@ module.exports.dislikeCardController = (req, res) => {
     { new: true },
   )
     .then(card => res.send({ data: card }))
-    .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
+    .catch((err) => {
+      if (err.name === 'ValidationError') return res.status(400).send({ message: 'Переданы некорректные данные для снятия лайка' });
+      else if (err.name === 'CastError') return res.status(404).send({ message: 'Передан несуществующий _id карточки' });
+      else  return res.status(500).send({ message: 'Произошла ошибка' });
+    });
 }
