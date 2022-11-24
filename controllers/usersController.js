@@ -5,7 +5,7 @@ module.exports.getAllUsersController = (req, res) => {
   User.find({})
     .then(data => res.status(200).send({ data }))
     .catch((err) => {
-      if (err.name === 'ValidationError') return res.status(400).send({ message: 'Переданы некорректные данные при создании пользователя' });
+      if (err.name === 'ValidationError') return res.status(400).send({ message: 'Переданы некорректные данные при получении списка пользователей' });
       else  return res.status(500).send({ message: 'Произошла ошибка' });
     });
 }
@@ -15,7 +15,8 @@ module.exports.getUserByIdController = (req, res) => {
   User.findById(req.params.userId )
     .then(data => res.status(200).send({ data }))
     .catch((err) => {
-      if (err.name === 'CastError') return res.status(404).send({ message: 'Пользователь по указанному _id не найден' });
+      if (err.name === 'ValidationError') return res.status(400).send({ message: 'Переданы некорректные данные при получении пользователя' });
+      else if (err.name === 'CastError') return res.status(404).send({ message: 'Пользователь по указанному _id не найден' });
       else  return res.status(500).send({ message: 'Произошла ошибка' });
     });
 }
