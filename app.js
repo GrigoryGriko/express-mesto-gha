@@ -15,6 +15,11 @@ app.use( bodyParser.urlencoded({ extended: true }) );
 
 mongoose.connect('mongodb://localhost:27017/mestodb');
 
+/*router.use('/*', (req, res) => {
+   /* здесь кидаем статус 404 и записываем message */
+//});
+
+
 app.use((req, res, next) => {
   req.user = {
     _id: '636ba24e5340ce44501d467a'
