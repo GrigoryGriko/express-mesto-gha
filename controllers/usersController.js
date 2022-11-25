@@ -1,11 +1,20 @@
 const User = require('../models/user');
 
+class NotFoundError extends Error { 
+  constructor(message) {
+    super(message);
+    this.errorCode = 404;
+    this.errorMessage = message;
+    this.name = 'NotFoundError'; 
+   } 
+}
 
 module.exports.getAllUsersController = (req, res) => {
   User.find({})
     .then(data => res.status(200).send({ data }))
     .catch((err) => {
       if (err.name === 'ValidationError') return res.status(400).send({ message: 'Переданы некорректные данные при получении списка пользователей' });
+      if (err.code === 404) return res.status(err.code).send({ message: err.errorMessage });
       else  return res.status(500).send({ message: 'Произошла ошибка' });
     });
 }
@@ -13,10 +22,11 @@ module.exports.getAllUsersController = (req, res) => {
 module.exports.getUserByIdController = (req, res) => {
   console.log(req.params.userId);
   User.findById(req.params.userId )
+    .orFail(new NotFoundError(`Карточка с id '${req.params.cardId}' не найдена`))
     .then(data => res.status(200).send({ data }))
     .catch((err) => {
       if (err.name === 'ValidationError') return res.status(400).send({ message: 'Переданы некорректные данные при получении пользователя' });
-      else if (err.name === 'NotFound') return res.status(404).send({ message: 'Пользователь по указанному _id не найден' });
+      else if (err.name === 'NotFoundError') return res.status(404).send({ message: 'Пользователь по указанному _id не найден' });
       else  return res.status(500).send({ message: 'Произошла ошибка' });
     });
 }
@@ -49,7 +59,7 @@ module.exports.updateProfileController = (req, res) => {
     .then(data => res.status(200).send({ data }))
     .catch((err) => {
       if (err.name === 'ValidationError') return res.status(400).send({ message: 'Переданы некорректные данные при создании пользователя' });
-      else if (err.name === 'NotFound') return res.status(404).send({ message: 'Пользователь с указанным _id не найден' });
+      else if (err.name === 'NotFoundError') return res.status(404).send({ message: 'Пользователь с указанным _id не найден' });
       else  return res.status(500).send({ message: 'Произошла ошибка' });
     });
 }
@@ -68,7 +78,7 @@ module.exports.updateAvatarController = (req, res) => {
     .then(data => res.status(200).send({ data }))
     .catch((err) => {
       if (err.name === 'ValidationError') return res.status(400).send({ message: 'Переданы некорректные данные при создании пользователя' });
-      else if (err.name === 'NotFound') return res.status(404).send({ message: 'Пользователь с указанным _id не найден' });
+      else if (err.name === 'NotFoundError') return res.status(404).send({ message: 'Пользователь с указанным _id не найден' });
       else  return res.status(500).send({ message: 'Произошла ошибка' });
     });
 }
