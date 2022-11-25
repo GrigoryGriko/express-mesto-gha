@@ -14,7 +14,7 @@ module.exports.getAllUsersController = (req, res) => {
     .then(data => res.status(200).send({ data }))
     .catch((err) => {
       if (err.name === 'ValidationError') return res.status(400).send({ message: 'Переданы некорректные данные при получении списка пользователей' });
-      if (err.code === 404) return res.status(err.code).send({ message: err.errorMessage });
+      else if (err.code === 404) return res.status(err.code).send({ message: err.errorMessage });
       else  return res.status(500).send({ message: 'Произошла ошибка' });
     });
 }
@@ -22,12 +22,12 @@ module.exports.getAllUsersController = (req, res) => {
 module.exports.getUserByIdController = (req, res) => {
   console.log(req.params.userId);
   User.findById(req.params.userId )
-    .orFail(new NotFoundError(`Карточка с id '${req.params.cardId}' не найдена`))
+    .orFail(new NotFoundError(`Пользователь с id '${req.params.userId}' не найден`))
     .then(data => res.status(200).send({ data }))
     .catch((err) => {
       if (err.name === 'ValidationError') return res.status(400).send({ message: 'Переданы некорректные данные при получении пользователя' });
-      else if (err.name === 'NotFoundError') return res.status(404).send({ message: 'Пользователь по указанному _id не найден' });
-      else  return res.status(500).send({ message: 'Произошла ошибка' });
+      else if (err.name === 'NotFoundError') return res.status(404).send({ message: err.errorMessage });
+      else return res.status(500).send({ message: 'Произошла ошибка' });
     });
 }
 
