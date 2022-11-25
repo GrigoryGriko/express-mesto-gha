@@ -25,7 +25,7 @@ module.exports.getUserByIdController = (req, res) => {
     .orFail(new NotFoundError(`Пользователь с id '${req.params.userId}' не найден`))
     .then(data => res.status(200).send({ data }))
     .catch((err) => {
-      if (err.name === 'ValidationError' || err.name === 'CastError') return res.status(400).send({ message: 'Переданы некорректные данные при получении пользователя' });
+      if (err.name === 'ValidationError' || err.name === 'CastError' || err.name === 'BadRequest') return res.status(400).send({ message: 'Переданы некорректные данные при получении пользователя' });
       else if (err.name === 'NotFoundError') return res.status(err.errorCode).send({ message: err.errorMessage });
       else return res.status(500).send({ message: 'Произошла ошибка' });
     });
