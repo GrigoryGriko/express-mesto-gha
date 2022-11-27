@@ -37,15 +37,5 @@ app.listen(PORT, () => {
     console.log(`Сервер работает (порт: ${PORT})`);
 })
 
-class NotFoundError extends Error { 
-  constructor(message) {
-    super(message);
-    this.errorCode = 404;
-    this.errorMessage = message;
-    this.name = 'NotFoundError'; 
-   } 
-}
 
-module.exports = NotFoundError;
-
-module.export = app;
+module.exports = app;

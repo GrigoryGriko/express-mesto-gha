@@ -1,5 +1,5 @@
 const Card = require('../models/card');
-const NotFoundError = require('../app');
+const NotFoundError = require('../NotFoundError');
 
 module.exports.getAllCardsController = (req, res) => {
   Card.find({})

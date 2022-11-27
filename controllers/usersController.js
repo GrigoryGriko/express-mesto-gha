@@ -1,5 +1,5 @@
 const User = require('../models/user');
-const NotFoundError = require('../app');
+const NotFoundError = require('../NotFoundError');
 
 module.exports.getAllUsersController = (req, res) => {
   User.find({})
