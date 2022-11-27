@@ -25,10 +25,12 @@ module.exports.createCardController = (req, res) => {
 
 module.exports.deleteCardByIdController = (req, res) => {
   Card.findByIdAndRemove(req.params.cardId)
+    .orFail(new NotFoundError(`Карточка с id '${req.params.cardId}' не найдена`))
     .then(data => res.status(200).send({ data }))
     .catch((err) => {
-      if (err.name === 'ValidationError' || err.name === 'CastError' || err.name === 'BadRequest') return res.status(404).send({ message: 'Карточка с указанным _id не найдена' });
-      else  return res.status(500).send({ message: 'Произошла ошибка' });
+      if (err.name === 'ValidationError' || err.name === 'CastError' || err.name === 'BadRequest') return res.status(400).send({ message: 'Карточка с указанным _id не найдена' });
+      else if (err.name === 'NotFoundError') return res.status(err.errorCode).send({ message: err.errorMessage });
+      else return res.status(500).send({ message: 'Произошла ошибка' });
     });
 }
 
@@ -43,7 +45,7 @@ module.exports.likeCardController = (req, res) => {
     .catch((err) => {
       if (err.name === 'ValidationError' || err.name === 'CastError' || err.name === 'BadRequest') return res.status(400).send({ message: 'Переданы некорректные данные для постановки лайка' });
       else if (err.name === 'NotFoundError') return res.status(err.errorCode).send({ message: err.errorMessage });
-      else  return res.status(500).send({ message: 'Произошла ошибка' });
+      else return res.status(500).send({ message: 'Произошла ошибка' });
     });
 }
 
@@ -58,6 +60,6 @@ module.exports.dislikeCardController = (req, res) => {
     .catch((err) => {
       if (err.name === 'ValidationError' || err.name === 'CastError' || err.name === 'BadRequest') return res.status(400).send({ message: 'Переданы некорректные данные для снятия лайка' });
       else if (err.name === 'NotFoundError') return res.status(err.errorCode).send({ message: err.errorMessage });
-      else  return res.status(500).send({ message: 'Произошла ошибка' });
+      else return res.status(500).send({ message: 'Произошла ошибка' });
     });
 }
