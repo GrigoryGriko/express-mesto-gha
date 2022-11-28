@@ -33,7 +33,9 @@
   },
   "devDependencies": {
     "eslint": "^8.26.0",
-    "nodemon": "^2.0.20"
+    "nodemon": "^2.0.20",
+    "eslint-config-airbnb-base": "^14.1.0",
+    "eslint-plugin-import": "^2.20.1"
   },
   "description": "[![Tests](../../actions/workflows/tests-13-sprint.yml/badge.svg)](../../actions/workflows/tests-13-sprint.yml) [![Tests](../../actions/workflows/tests-14-sprint.yml/badge.svg)](../../actions/workflows/tests-14-sprint.yml)\r # Проект Mesto фронтенд + бэкенд",
   "main": ".eslintrc.js",
