@@ -1,26 +1,22 @@
-const path = require('path');
 const express = require('express');
 const mongoose = require('mongoose');
+const bodyParser = require('body-parser');
 const usersRouter = require('./routes/usersRouter');
 const cardsRouter = require('./routes/cardsRouter');
-const bodyParser = require('body-parser');
 
 const { PORT = 3000 } = process.env;
 
 const app = express();
 
-
-
-app.use( express.json() );
-app.use( bodyParser.urlencoded({ extended: true }) );
+app.use(express.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 mongoose.connect('mongodb://localhost:27017/mestodb');
 
 app.use((req, res, next) => {
   req.user = {
-    _id: '636ba24e5340ce44501d467a'
+    _id: '636ba24e5340ce44501d467a',
   };
-  
   next();
 });
 
@@ -32,8 +28,7 @@ app.use((req, res) => {
 });
 
 app.listen(PORT, () => {
-    console.log(`Сервер работает (порт: ${PORT})`);
-})
-
+  console.log(`Сервер работает (порт: ${PORT})`);
+});
 
 module.exports = app;
