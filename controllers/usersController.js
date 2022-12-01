@@ -8,7 +8,7 @@ module.exports.getAllUsersController = (req, res) => {
     .then((data) => res.status(CODE_OK).send({ data }))
     .catch((err) => {
       if (err.name === 'ValidationError' || err.name === 'CastError' || err.name === 'BadRequest') return res.status(CODE_BADREQUEST).send({ message: 'Переданы некорректные данные при получении пользователя' });
-      if (err.name === 'NotFoundError') return res.status(err.errorCode).send({ message: err.errorMessage });
+      if (err.name === 'NotFoundError') return res.status(err.errorCode).send({ message: err.message });
       return res.status(CODE_SERVERERROR).send({ message: 'Произошла ошибка' });
     });
 };
@@ -19,7 +19,7 @@ module.exports.getUserByIdController = (req, res) => {
     .then((data) => res.status(CODE_OK).send({ data }))
     .catch((err) => {
       if (err.name === 'ValidationError' || err.name === 'CastError' || err.name === 'BadRequest') return res.status(CODE_BADREQUEST).send({ message: 'Переданы некорректные данные при получении пользователя' });
-      if (err.name === 'NotFoundError') return res.status(err.errorCode).send({ message: err.errorMessage });
+      if (err.name === 'NotFoundError') return res.status(err.errorCode).send({ message: err.message });
       return res.status(CODE_SERVERERROR).send({ message: 'Произошла ошибка' });
     });
 };
@@ -53,7 +53,7 @@ module.exports.updateProfileController = (req, res) => {
     .then((data) => res.status(CODE_OK).send({ data }))
     .catch((err) => {
       if (err.name === 'ValidationError' || err.name === 'CastError' || err.name === 'BadRequest') return res.status(CODE_BADREQUEST).send({ message: 'Переданы некорректные данные при получении пользователя' });
-      if (err.name === 'NotFoundError') return res.status(err.errorCode).send({ message: err.errorMessage });
+      if (err.name === 'NotFoundError') return res.status(err.errorCode).send({ message: err.message });
       return res.status(CODE_SERVERERROR).send({ message: 'Произошла ошибка' });
     });
 };

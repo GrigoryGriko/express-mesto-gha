@@ -28,7 +28,7 @@ module.exports.deleteCardByIdController = (req, res) => {
     .then((data) => res.status(CODE_OK).send({ data }))
     .catch((err) => {
       if (err.name === 'ValidationError' || err.name === 'CastError' || err.name === 'BadRequest') return res.status(CODE_BADREQUEST).send({ message: 'Карточка с указанным _id не найдена' });
-      if (err.name === 'NotFoundError') return res.status(err.errorCode).send({ message: err.errorMessage });
+      if (err.name === 'NotFoundError') return res.status(err.errorCode).send({ message: err.message });
       return res.status(CODE_SERVERERROR).send({ message: 'Произошла ошибка' });
     });
 };
@@ -39,11 +39,11 @@ module.exports.likeCardController = (req, res) => {
     { $addToSet: { likes: req.user._id } },
     { new: true },
   )
-    .orFail(new NotFoundError('Карточки не найдены'))
+    .orFail(new NotFoundError('Карточка не найдены'))
     .then((data) => res.status(CODE_OK).send({ data }))
     .catch((err) => {
       if (err.name === 'ValidationError' || err.name === 'CastError' || err.name === 'BadRequest') return res.status(CODE_BADREQUEST).send({ message: 'Переданы некорректные данные для постановки лайка' });
-      if (err.name === 'NotFoundError') return res.status(err.errorCode).send({ message: err.errorMessage });
+      if (err.name === 'NotFoundError') return res.status(err.errorCode).send({ message: err.message });
       return res.status(CODE_SERVERERROR).send({ message: 'Произошла ошибка' });
     });
 };
@@ -54,11 +54,11 @@ module.exports.dislikeCardController = (req, res) => {
     { $pull: { likes: req.user._id } },
     { new: true },
   )
-    .orFail(new NotFoundError('Карточки не найдены'))
+    .orFail(new NotFoundError('Карточка не найдены'))
     .then((data) => res.status(CODE_OK).send({ data }))
     .catch((err) => {
       if (err.name === 'ValidationError' || err.name === 'CastError' || err.name === 'BadRequest') return res.status(CODE_BADREQUEST).send({ message: 'Переданы некорректные данные для снятия лайка' });
-      if (err.name === 'NotFoundError') return res.status(err.errorCode).send({ message: err.errorMessage });
+      if (err.name === 'NotFoundError') return res.status(err.errorCode).send({ message: err.message });
       return res.status(CODE_SERVERERROR).send({ message: 'Произошла ошибка' });
     });
 };
