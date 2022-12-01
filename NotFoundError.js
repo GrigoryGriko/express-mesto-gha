@@ -5,6 +5,7 @@ class NotFoundError extends Error {
     super(message);
     this.errorCode = CODE_NOTFOUND;
     this.name = 'NotFoundError';
+    this.errorMessage = message;
   }
 }
 
