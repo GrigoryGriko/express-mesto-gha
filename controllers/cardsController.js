@@ -4,9 +4,11 @@ const { CODE_OK, CODE_BADREQUEST, CODE_SERVERERROR } = require('../constants/con
 
 module.exports.getAllCardsController = (req, res) => {
   Card.find({})
+    .orFail(new NotFoundError('Карточкb не найденs'))
     .then((data) => res.status(CODE_OK).send({ data }))
     .catch((err) => {
       if (err.name === 'ValidationError' || err.name === 'CastError' || err.name === 'BadRequest') return res.status(CODE_BADREQUEST).send({ message: 'Переданы некорректные данные при получении карточки' });
+      if (err.name === 'NotFoundError') return res.status(err.errorCode).send({ message: err.message });
       return res.status(CODE_SERVERERROR).send({ message: 'Произошла ошибка' });
     });
 };
@@ -15,9 +17,11 @@ module.exports.createCardController = (req, res) => {
   const { name, link } = req.body;
 
   Card.create({ name, link, owner: req.user._id })
+    .orFail(new NotFoundError('Карточка не найдена'))
     .then((data) => res.status(CODE_OK).send({ data }))
     .catch((err) => {
       if (err.name === 'ValidationError' || err.name === 'CastError' || err.name === 'BadRequest') return res.status(CODE_BADREQUEST).send({ message: 'Переданы некорректные данные при создании карточки' });
+      if (err.name === 'NotFoundError') return res.status(err.errorCode).send({ message: err.message });
       return res.status(CODE_SERVERERROR).send({ message: 'Произошла ошибка' });
     });
 };
