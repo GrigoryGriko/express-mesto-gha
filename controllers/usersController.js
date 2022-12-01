@@ -28,9 +28,11 @@ module.exports.createUserController = (req, res) => {
   const { name, about, avatar } = req.body;
 
   User.create({ name, about, avatar })
+    .orFail(new NotFoundError('объект не найден'))
     .then((data) => res.status(CODE_OK).send({ data }))
     .catch((err) => {
       if (err.name === 'ValidationError' || err.name === 'CastError' || err.name === 'BadRequest') return res.status(CODE_BADREQUEST).send({ message: 'Переданы некорректные данные при получении пользователя' });
+      if (err.name === 'NotFoundError') return res.status(err.errorCode).send({ message: err.errorMessage });
       return res.status(CODE_SERVERERROR).send({ message: 'Произошла ошибка' });
     });
 };
@@ -48,7 +50,8 @@ module.exports.updateProfileController = (req, res) => {
       new: true,
       runValidators: true,
     },
-  ).orFail(new NotFoundError(`Пользователь с id '${req.params.userId}' не найден`))
+  )
+    .orFail(new NotFoundError(`Пользователь с id '${req.params.userId}' не найден`))
     .then((data) => res.status(CODE_OK).send({ data }))
     .catch((err) => {
       if (err.name === 'ValidationError' || err.name === 'CastError' || err.name === 'BadRequest') return res.status(CODE_BADREQUEST).send({ message: 'Переданы некорректные данные при получении пользователя' });
@@ -68,6 +71,7 @@ module.exports.updateAvatarController = (req, res) => {
       runValidators: true,
     },
   )
+    .orFail(new NotFoundError(`Пользователь с id '${req.params.userId}' не найден`))
     .then((data) => res.status(CODE_OK).send({ data }))
     .catch((err) => {
       if (err.name === 'ValidationError' || err.name === 'CastError' || err.name === 'BadRequest') return res.status(CODE_BADREQUEST).send({ message: 'Переданы некорректные данные при получении пользователя' });
