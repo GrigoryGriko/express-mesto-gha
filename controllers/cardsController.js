@@ -4,6 +4,7 @@ const { CODE_OK, CODE_BADREQUEST, CODE_SERVERERROR } = require('../constants/con
 
 module.exports.getAllCardsController = (req, res) => {
   Card.find({})
+    .populate(['owner', 'likes'])
     .then((data) => res.status(CODE_OK).send({ data }))
     .catch((err) => {
       if (err.name === 'ValidationError' || err.name === 'CastError' || err.name === 'BadRequest') return res.status(CODE_BADREQUEST).send({ message: 'Переданы некорректные данные при получении карточки' });
