@@ -3,7 +3,11 @@ const { CODE_OK, CODE_BADREQUEST, CODE_SERVERERROR } = require('../constants/con
 
 module.exports.getAllUsersController = (req, res) => {
   User.find({})
-    .orFail(new Error('Пользователи не найдены'))
+    .orFail(() => {
+      const error = new Error('Пользователи не найдены');
+      error.statusCode = 404;
+      throw error;
+    })
     .then((data) => res.status(CODE_OK).send({ data }))
     .catch((err) => {
       if (err.name === 'ValidationError' || err.name === 'CastError' || err.name === 'BadRequest') return res.status(CODE_BADREQUEST).send({ message: 'Переданы некорректные данные при получении пользователя' });
@@ -14,7 +18,11 @@ module.exports.getAllUsersController = (req, res) => {
 
 module.exports.getUserByIdController = (req, res) => {
   User.findById(req.params.userId)
-    .orFail(new Error(`Пользователь с id '${req.params.userId}' не найден`))
+    .orFail(() => {
+      const error = new Error(`Пользователь с id '${req.params.userId}' не найден`);
+      error.statusCode = 404;
+      throw error;
+    })
     .then((data) => res.status(CODE_OK).send({ data }))
     .catch((err) => {
       if (err.name === 'ValidationError' || err.name === 'CastError' || err.name === 'BadRequest') return res.status(CODE_BADREQUEST).send({ message: 'Переданы некорректные данные при получении пользователя' });
@@ -48,7 +56,11 @@ module.exports.updateProfileController = (req, res) => {
       runValidators: true,
     },
   )
-    .orFail(new Error(`Пользователь с id '${req.params.userId}' не найден`))
+    .orFail(() => {
+      const error = new Error(`Пользователь с id '${req.params.userId}' не найден`);
+      error.statusCode = 404;
+      throw error;
+    })
     .then((data) => res.status(CODE_OK).send({ data }))
     .catch((err) => {
       if (err.name === 'ValidationError' || err.name === 'CastError' || err.name === 'BadRequest') return res.status(CODE_BADREQUEST).send({ message: 'Переданы некорректные данные при получении пользователя' });
@@ -68,6 +80,11 @@ module.exports.updateAvatarController = (req, res) => {
       runValidators: true,
     },
   )
+    .orFail(() => {
+      const error = new Error(`Пользователь с id '${req.params.userId}' не найден`);
+      error.statusCode = 404;
+      throw error;
+    })
     .then((data) => res.status(CODE_OK).send({ data }))
     .catch((err) => {
       if (err.name === 'ValidationError' || err.name === 'CastError' || err.name === 'BadRequest') return res.status(CODE_BADREQUEST).send({ message: 'Переданы некорректные данные при получении пользователя' });
