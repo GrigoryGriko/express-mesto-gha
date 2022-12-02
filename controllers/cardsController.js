@@ -1,19 +1,18 @@
 const Card = require('../models/card');
-const NotFoundError = require('../NotFoundError');
 const { CODE_OK, CODE_BADREQUEST, CODE_SERVERERROR } = require('../constants/constants');
 
 module.exports.getAllCardsController = (req, res) => {
   Card.find({})
     .populate(['owner', 'likes'])
     .orFail(() => {
-      const error = new NotFoundError('Нет карточки по заданному id');
+      const error = new Error('Нет карточки по заданному id');
       error.statusCode = 404;
       throw error;
     })
     .then((data) => res.status(CODE_OK).send({ data }))
     .catch((err) => {
       if (err.name === 'ValidationError' || err.name === 'CastError' || err.name === 'BadRequest') return res.status(CODE_BADREQUEST).send({ message: 'Переданы некорректные данные при получении карточки' });
-      if (err.name === 'NotFoundError') return res.status(err.errorCode).send({ message: err.message });
+      if (err.name === 'Error') return res.status(err.errorCode).send({ message: err.message });
       return res.status(CODE_SERVERERROR).send({ message: 'Произошла ошибка' });
     });
 };
@@ -23,14 +22,14 @@ module.exports.createCardController = (req, res) => {
 
   Card.create({ name, link, owner: req.user._id })
     .orFail(() => {
-      const error = new NotFoundError('Нет карточки по заданному id');
+      const error = new Error('Нет карточки по заданному id');
       error.statusCode = 404;
       throw error;
     })
     .then((data) => res.status(CODE_OK).send({ data }))
     .catch((err) => {
       if (err.name === 'ValidationError' || err.name === 'CastError' || err.name === 'BadRequest') return res.status(CODE_BADREQUEST).send({ message: 'Переданы некорректные данные при создании карточки' });
-      if (err.name === 'NotFoundError') return res.status(err.errorCode).send({ message: err.message });
+      if (err.name === 'Error') return res.status(err.errorCode).send({ message: err.message });
       return res.status(CODE_SERVERERROR).send({ message: 'Произошла ошибка' });
     });
 };
@@ -38,14 +37,14 @@ module.exports.createCardController = (req, res) => {
 module.exports.deleteCardByIdController = (req, res) => {
   Card.findByIdAndRemove(req.params.cardId)
     .orFail(() => {
-      const error = new NotFoundError('Нет карточки по заданному id');
+      const error = new Error('Нет карточки по заданному id');
       error.statusCode = 404;
       throw error;
     })
     .then((data) => res.status(CODE_OK).send({ data }))
     .catch((err) => {
       if (err.name === 'ValidationError' || err.name === 'CastError' || err.name === 'BadRequest') return res.status(CODE_BADREQUEST).send({ message: 'Карточка с указанным _id не найдена' });
-      if (err.name === 'NotFoundError') return res.status(err.errorCode).send({ message: err.message });
+      if (err.name === 'Error') return res.status(err.errorCode).send({ message: err.message });
       return res.status(CODE_SERVERERROR).send({ message: err.name });
     });
 };
@@ -57,14 +56,14 @@ module.exports.likeCardController = (req, res) => {
     { new: true },
   )
     .orFail(() => {
-      const error = new NotFoundError('Нет карточки по заданному id');
+      const error = new Error('Нет карточки по заданному id');
       error.statusCode = 404;
       throw error;
     })
     .then((data) => res.status(CODE_OK).send({ data }))
     .catch((err) => {
       if (err.name === 'ValidationError' || err.name === 'CastError' || err.name === 'BadRequest') return res.status(CODE_BADREQUEST).send({ message: 'Переданы некорректные данные для постановки лайка' });
-      if (err.name === 'NotFoundError') return res.status(err.errorCode).send({ message: err.message });
+      if (err.name === 'Error') return res.status(err.errorCode).send({ message: err.message });
       return res.status(CODE_SERVERERROR).send({ message: 'Произошла ошибка' });
     });
 };
@@ -76,14 +75,14 @@ module.exports.dislikeCardController = (req, res) => {
     { new: true },
   )
     .orFail(() => {
-      const error = new NotFoundError('Нет карточки по заданному id');
+      const error = new Error('Нет карточки по заданному id');
       error.statusCode = 404;
       throw error;
     })
     .then((data) => res.status(CODE_OK).send({ data }))
     .catch((err) => {
       if (err.name === 'ValidationError' || err.name === 'CastError' || err.name === 'BadRequest') return res.status(CODE_BADREQUEST).send({ message: 'Переданы некорректные данные для снятия лайка' });
-      if (err.name === 'NotFoundError') return res.status(err.errorCode).send({ message: err.message });
+      if (err.name === 'Error') return res.status(err.errorCode).send({ message: err.message });
       return res.status(CODE_SERVERERROR).send({ message: 'Произошла ошибка' });
     });
 };
