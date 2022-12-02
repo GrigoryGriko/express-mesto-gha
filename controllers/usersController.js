@@ -5,7 +5,6 @@ module.exports.getAllUsersController = (req, res) => {
   User.find({})
     .orFail(() => {
       const error = new Error('Пользователи не найдены');
-      error.statusCode = 404;
       throw error;
     })
     .then((data) => res.status(CODE_OK).send({ data }))
@@ -20,7 +19,6 @@ module.exports.getUserByIdController = (req, res) => {
   User.findById(req.params.userId)
     .orFail(() => {
       const error = new Error(`Пользователь с id '${req.params.userId}' не найден`);
-      error.statusCode = 404;
       throw error;
     })
     .then((data) => res.status(CODE_OK).send({ data }))
@@ -58,7 +56,6 @@ module.exports.updateProfileController = (req, res) => {
   )
     .orFail(() => {
       const error = new Error(`Пользователь с id '${req.params.userId}' не найден`);
-      error.statusCode = 404;
       throw error;
     })
     .then((data) => res.status(CODE_OK).send({ data }))
@@ -82,7 +79,6 @@ module.exports.updateAvatarController = (req, res) => {
   )
     .orFail(() => {
       const error = new Error(`Пользователь с id '${req.params.userId}' не найден`);
-      error.statusCode = 404;
       throw error;
     })
     .then((data) => res.status(CODE_OK).send({ data }))

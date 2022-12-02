@@ -6,7 +6,6 @@ module.exports.getAllCardsController = (req, res) => {
     .populate(['owner', 'likes'])
     .orFail(() => {
       const error = new Error('Нет карточки по заданному id');
-      error.statusCode = 404;
       throw error;
     })
     .then((data) => res.status(CODE_OK).send({ data }))
@@ -32,7 +31,6 @@ module.exports.deleteCardByIdController = (req, res) => {
   Card.findByIdAndRemove(req.params.cardId)
     .orFail(() => {
       const error = new Error('Нет карточки по заданному id');
-      error.statusCode = 404;
       throw error;
     })
     .then((data) => res.status(CODE_OK).send({ data }))
@@ -51,7 +49,6 @@ module.exports.likeCardController = (req, res) => {
   )
     .orFail(() => {
       const error = new Error('Нет карточки по заданному id');
-      error.statusCode = 404;
       throw error;
     })
     .then((data) => res.status(CODE_OK).send({ data }))
@@ -70,7 +67,6 @@ module.exports.dislikeCardController = (req, res) => {
   )
     .orFail(() => {
       const error = new Error('Нет карточки по заданному id');
-      error.statusCode = 404;
       throw error;
     })
     .then((data) => res.status(CODE_OK).send({ data }))
