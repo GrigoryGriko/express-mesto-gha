@@ -5,9 +5,15 @@ const { CODE_OK, CODE_BADREQUEST, CODE_SERVERERROR } = require('../constants/con
 module.exports.getAllCardsController = (req, res) => {
   Card.find({})
     .populate(['owner', 'likes'])
+    .orFail(() => {
+      const error = new NotFoundError('Нет карточки по заданному id');
+      error.statusCode = 404;
+      throw error;
+    })
     .then((data) => res.status(CODE_OK).send({ data }))
     .catch((err) => {
       if (err.name === 'ValidationError' || err.name === 'CastError' || err.name === 'BadRequest') return res.status(CODE_BADREQUEST).send({ message: 'Переданы некорректные данные при получении карточки' });
+      if (err.name === 'NotFoundError') return res.status(err.errorCode).send({ message: err.message });
       return res.status(CODE_SERVERERROR).send({ message: 'Произошла ошибка' });
     });
 };
@@ -16,21 +22,31 @@ module.exports.createCardController = (req, res) => {
   const { name, link } = req.body;
 
   Card.create({ name, link, owner: req.user._id })
+    .orFail(() => {
+      const error = new NotFoundError('Нет карточки по заданному id');
+      error.statusCode = 404;
+      throw error;
+    })
     .then((data) => res.status(CODE_OK).send({ data }))
     .catch((err) => {
       if (err.name === 'ValidationError' || err.name === 'CastError' || err.name === 'BadRequest') return res.status(CODE_BADREQUEST).send({ message: 'Переданы некорректные данные при создании карточки' });
+      if (err.name === 'NotFoundError') return res.status(err.errorCode).send({ message: err.message });
       return res.status(CODE_SERVERERROR).send({ message: 'Произошла ошибка' });
     });
 };
 
 module.exports.deleteCardByIdController = (req, res) => {
   Card.findByIdAndRemove(req.params.cardId)
-    .orFail(new NotFoundError(`Карточка с id '${req.params.cardId}' не найдена`))
+    .orFail(() => {
+      const error = new NotFoundError('Нет карточки по заданному id');
+      error.statusCode = 404;
+      throw error;
+    })
     .then((data) => res.status(CODE_OK).send({ data }))
     .catch((err) => {
       if (err.name === 'ValidationError' || err.name === 'CastError' || err.name === 'BadRequest') return res.status(CODE_BADREQUEST).send({ message: 'Карточка с указанным _id не найдена' });
       if (err.name === 'NotFoundError') return res.status(err.errorCode).send({ message: err.message });
-      return res.status(CODE_SERVERERROR).send({ message: 'Произошла ошибка' });
+      return res.status(CODE_SERVERERROR).send({ message: err.name });
     });
 };
 
@@ -40,7 +56,11 @@ module.exports.likeCardController = (req, res) => {
     { $addToSet: { likes: req.user._id } },
     { new: true },
   )
-    .orFail(new NotFoundError('Карточка не найдена'))
+    .orFail(() => {
+      const error = new NotFoundError('Нет карточки по заданному id');
+      error.statusCode = 404;
+      throw error;
+    })
     .then((data) => res.status(CODE_OK).send({ data }))
     .catch((err) => {
       if (err.name === 'ValidationError' || err.name === 'CastError' || err.name === 'BadRequest') return res.status(CODE_BADREQUEST).send({ message: 'Переданы некорректные данные для постановки лайка' });
@@ -55,7 +75,11 @@ module.exports.dislikeCardController = (req, res) => {
     { $pull: { likes: req.user._id } },
     { new: true },
   )
-    .orFail(new NotFoundError('Карточка не найдены'))
+    .orFail(() => {
+      const error = new NotFoundError('Нет карточки по заданному id');
+      error.statusCode = 404;
+      throw error;
+    })
     .then((data) => res.status(CODE_OK).send({ data }))
     .catch((err) => {
       if (err.name === 'ValidationError' || err.name === 'CastError' || err.name === 'BadRequest') return res.status(CODE_BADREQUEST).send({ message: 'Переданы некорректные данные для снятия лайка' });

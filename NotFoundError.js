@@ -1,6 +1,6 @@
 const { CODE_NOTFOUND } = require('./constants/constants');
 
-class NotFoundError extends Error {
+class NNotFoundError extends Error {
   constructor(message) {
     super(message);
     this.errorCode = CODE_NOTFOUND;
@@ -8,4 +8,4 @@ class NotFoundError extends Error {
   }
 }
 
-module.exports = NotFoundError;
+module.exports = NNotFoundError;
