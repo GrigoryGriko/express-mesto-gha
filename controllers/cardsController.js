@@ -1,11 +1,17 @@
 const Card = require('../models/card');
-const { CODE_OK, CODE_BADREQUEST, CODE_SERVERERROR } = require('../constants/constants');
+const {
+  CODE_OK,
+  CODE_BADREQUEST,
+  CODE_NOTFOUND,
+  CODE_SERVERERROR,
+} = require('../constants/constants');
 
 module.exports.getAllCardsController = (req, res) => {
   Card.find({})
     .populate(['owner', 'likes'])
     .orFail(() => {
       const error = new Error('Нет карточки по заданному id');
+      error.statusCode = CODE_NOTFOUND;
       throw error;
     })
     .then((data) => res.status(CODE_OK).send({ data }))
@@ -20,9 +26,15 @@ module.exports.createCardController = (req, res) => {
   const { name, link } = req.body;
 
   Card.create({ name, link, owner: req.user._id })
+    .orFail(() => {
+      const error = new Error('Нет карточки по заданному id');
+      error.statusCode = CODE_NOTFOUND;
+      throw error;
+    })
     .then((data) => res.status(CODE_OK).send({ data }))
     .catch((err) => {
       if (err.name === 'ValidationError' || err.name === 'CastError' || err.name === 'BadRequest') return res.status(CODE_BADREQUEST).send({ message: 'Переданы некорректные данные при создании карточки' });
+      if (err.name === 'Error') return res.status(err.errorCode).send({ message: err.message });
       return res.status(CODE_SERVERERROR).send({ message: 'Произошла ошибка' });
     });
 };
@@ -31,6 +43,7 @@ module.exports.deleteCardByIdController = (req, res) => {
   Card.findByIdAndRemove(req.params.cardId)
     .orFail(() => {
       const error = new Error('Нет карточки по заданному id');
+      error.statusCode = CODE_NOTFOUND;
       throw error;
     })
     .then((data) => res.status(CODE_OK).send({ data }))
@@ -49,6 +62,7 @@ module.exports.likeCardController = (req, res) => {
   )
     .orFail(() => {
       const error = new Error('Нет карточки по заданному id');
+      error.statusCode = CODE_NOTFOUND;
       throw error;
     })
     .then((data) => res.status(CODE_OK).send({ data }))
@@ -67,6 +81,7 @@ module.exports.dislikeCardController = (req, res) => {
   )
     .orFail(() => {
       const error = new Error('Нет карточки по заданному id');
+      error.statusCode = CODE_NOTFOUND;
       throw error;
     })
     .then((data) => res.status(CODE_OK).send({ data }))
