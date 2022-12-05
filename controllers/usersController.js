@@ -1,86 +1,93 @@
-const Card = require('../models/card');
+const User = require('../models/user');
 const {
   CODE_OK,
+  CODE_CREATED,
   CODE_BADREQUEST,
   CODE_NOTFOUND,
   CODE_SERVERERROR,
 } = require('../constants/constants');
 
-module.exports.getAllCardsController = (req, res) => {
-  Card.find({})
-    .populate(['owner', 'likes'])
+module.exports.getAllUsersController = (req, res) => {
+  User.find({})
     .then((data) => res.status(CODE_OK).send({ data }))
     .catch((err) => {
-      if (err.name === 'ValidationError' || err.name === 'CastError' || err.name === 'BadRequest') return res.status(CODE_BADREQUEST).send({ message: 'Переданы некорректные данные при получении карточки' });
-      return res.status(CODE_SERVERERROR).send({ message: 'Произошла ошибка' });
+      if (err.name === 'ValidationError' || err.name === 'CastError' || err.name === 'BadRequest') return res.status(400).send({ message: 'Переданы некорректные данные при получении пользователя' });
+      return res.status(500).send({ message: 'Произошла ошибка' });
     });
 };
 
-module.exports.createCardController = (req, res) => {
-  const { name, link } = req.body;
-
-  Card.create({ name, link, owner: req.user._id })
+module.exports.getUserByIdController = (req, res) => {
+  User.findById(req.params.userId)
     .orFail(() => {
-      const error = new Error('Нет карточки по заданному id');
+      const error = new Error(`Пользователь с id '${req.params.userId}' не найден`);
       error.statusCode = CODE_NOTFOUND;
       throw error;
     })
     .then((data) => res.status(CODE_OK).send({ data }))
     .catch((err) => {
-      if (err.name === 'ValidationError') return res.status(CODE_BADREQUEST).send({ message: 'Переданы некорректные данные при создании карточки' });
+      if (err.name === 'ValidationError' || err.name === 'CastError') return res.status(CODE_BADREQUEST).send({ message: 'Невалидный ID' });
       if (err.name === 'Error') return res.status(err.errorCode).send({ message: err.message });
       return res.status(CODE_SERVERERROR).send({ message: 'Произошла ошибка' });
     });
 };
 
-module.exports.deleteCardByIdController = (req, res) => {
-  Card.findByIdAndRemove(req.params.cardId)
-    .orFail(() => {
-      const error = new Error('Нет карточки по заданному id');
-      error.statusCode = CODE_NOTFOUND;
-      throw error;
-    })
-    .then((data) => res.status(CODE_OK).send({ data }))
+module.exports.createUserController = (req, res) => {
+  const { name, about, avatar } = req.body;
+
+  User.create({ name, about, avatar })
+    .then((data) => res.status(CODE_CREATED).send({ data }))
     .catch((err) => {
-      if (err.name === 'ValidationError') return res.status(CODE_BADREQUEST).send({ message: 'Невалидный ID' });
-      if (err.name === 'Error') return res.status(err.errorCode).send({ message: err.message });
-      return res.status(CODE_SERVERERROR).send({ message: err.name });
+      if (err.name === 'ValidationError') return res.status(CODE_BADREQUEST).send({ message: 'Переданы некорректные данные при получении пользователя' });
+      return res.status(CODE_SERVERERROR).send({ message: 'Произошла ошибка' });
     });
 };
 
-module.exports.likeCardController = (req, res) => {
-  Card.findByIdAndUpdate(
-    req.params.cardId,
-    { $addToSet: { likes: req.user._id } },
-    { new: true },
+module.exports.updateProfileController = (req, res) => {
+  const { Name, About } = req.body;
+  User.findByIdAndUpdate(
+    req.user._id,
+    {
+      name: Name,
+      about: About,
+    },
+
+    {
+      new: true,
+      runValidators: true,
+    },
   )
     .orFail(() => {
-      const error = new Error('Нет карточки по заданному id');
+      const error = new Error(`Пользователь с id '${req.params.userId}' не найден`);
       error.statusCode = CODE_NOTFOUND;
       throw error;
     })
     .then((data) => res.status(CODE_OK).send({ data }))
     .catch((err) => {
-      if (err.name === 'CastError') return res.status(CODE_BADREQUEST).send({ message: 'Невалидный ID' });
+      if (err.name === 'ValidationError' || err.name === 'CastError') return res.status(CODE_BADREQUEST).send({ message: 'Невалидный ID' });
       if (err.name === 'Error') return res.status(err.errorCode).send({ message: err.message });
       return res.status(CODE_SERVERERROR).send({ message: 'Произошла ошибка' });
     });
 };
 
-module.exports.dislikeCardController = (req, res) => {
-  Card.findByIdAndUpdate(
-    req.params.cardId,
-    { $pull: { likes: req.user._id } },
-    { new: true },
+module.exports.updateAvatarController = (req, res) => {
+  const { Avatar } = req.body;
+  User.findByIdAndUpdate(
+    req.user._id,
+    { avatar: Avatar },
+
+    {
+      new: true,
+      runValidators: true,
+    },
   )
     .orFail(() => {
-      const error = new Error('Нет карточки по заданному id');
+      const error = new Error(`Пользователь с id '${req.params.userId}' не найден`);
       error.statusCode = CODE_NOTFOUND;
       throw error;
     })
     .then((data) => res.status(CODE_OK).send({ data }))
     .catch((err) => {
-      if (err.name === 'CastError') return res.status(CODE_BADREQUEST).send({ message: 'Невалидный ID' });
+      if (err.name === 'ValidationError' || err.name === 'CastError') return res.status(CODE_BADREQUEST).send({ message: 'Невалидный ID' });
       if (err.name === 'Error') return res.status(err.errorCode).send({ message: err.message });
       return res.status(CODE_SERVERERROR).send({ message: 'Произошла ошибка' });
     });
