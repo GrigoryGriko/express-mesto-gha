@@ -1,7 +1,6 @@
 const User = require('../models/user');
 const {
   CODE_OK,
-  CODE_CREATED,
   CODE_BADREQUEST,
   CODE_NOTFOUND,
   CODE_SERVERERROR,
@@ -11,7 +10,8 @@ module.exports.getAllUsers = (req, res) => {
   User.find({})
     .then((data) => res.status(CODE_OK).send({ data }))
     .catch((err) => {
-      if (err.name === 'ValidationError' || err.name === 'CastError' || err.name === 'BadRequest') return res.status(CODE_BADREQUEST).send({ message: 'Переданы некорректные данные при получении пользователя' });
+      if (err.name === 'ValidationError' || err.name === 'CastError' || err.name === 'BadRequest') return res.status(400).send({ message: 'Переданы некорректные данные при получении пользователя' });
+      if (err.name === 'Error') return res.status(err.statusCode).send({ message: err.message });
       return res.status(500).send({ message: 'Произошла ошибка' });
     });
 };
@@ -35,7 +35,7 @@ module.exports.createUser = (req, res) => {
   const { name, about, avatar } = req.body;
 
   User.create({ name, about, avatar })
-    .then((data) => res.status(CODE_CREATED).send({ data }))
+    .then((data) => res.status(CODE_OK).send({ data }))
     .catch((err) => {
       if (err.name === 'ValidationError') return res.status(CODE_BADREQUEST).send({ message: 'Переданы некорректные данные при получении пользователя' });
       return res.status(CODE_SERVERERROR).send({ message: 'Произошла ошибка' });
