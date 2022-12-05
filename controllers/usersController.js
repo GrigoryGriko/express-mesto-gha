@@ -11,7 +11,7 @@ module.exports.getAllUsersController = (req, res) => {
   User.find({})
     .then((data) => res.status(CODE_OK).send({ data }))
     .catch((err) => {
-      if (err.name === 'ValidationError' || err.name === 'CastError' || err.name === 'BadRequest') return res.status(400).send({ message: 'Переданы некорректные данные при получении пользователя' });
+      if (err.name === 'ValidationError' || err.name === 'CastError' || err.name === 'BadRequest') return res.status(CODE_BADREQUEST).send({ message: 'Переданы некорректные данные при получении пользователя' });
       return res.status(500).send({ message: 'Произошла ошибка' });
     });
 };
@@ -26,7 +26,7 @@ module.exports.getUserByIdController = (req, res) => {
     .then((data) => res.status(CODE_OK).send({ data }))
     .catch((err) => {
       if (err.name === 'ValidationError' || err.name === 'CastError') return res.status(CODE_BADREQUEST).send({ message: 'Невалидный ID' });
-      if (err.name === 'Error') return res.status(err.errorCode).send({ message: err.message });
+      if (err.name === 'Error') return res.status(err.statusCode).send({ message: err.message });
       return res.status(CODE_SERVERERROR).send({ message: 'Произошла ошибка' });
     });
 };
