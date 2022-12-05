@@ -25,7 +25,7 @@ module.exports.getUserByIdController = (req, res) => {
     })
     .then((data) => res.status(CODE_OK).send({ data }))
     .catch((err) => {
-      if (err.name === 'ValidationError') return res.status(CODE_BADREQUEST).send({ message: 'Невалидный ID' });
+      if (err.name === 'ValidationError' || err.name === 'CastError') return res.status(CODE_BADREQUEST).send({ message: 'Невалидный ID' });
       if (err.name === 'Error') return res.status(err.errorCode).send({ message: err.message });
       return res.status(CODE_SERVERERROR).send({ message: 'Произошла ошибка' });
     });
