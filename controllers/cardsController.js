@@ -9,15 +9,9 @@ const {
 module.exports.getAllCardsController = (req, res) => {
   Card.find({})
     .populate(['owner', 'likes'])
-    .orFail(() => {
-      const error = new Error('Нет карточки по заданному id');
-      error.statusCode = CODE_NOTFOUND;
-      throw error;
-    })
     .then((data) => res.status(CODE_OK).send({ data }))
     .catch((err) => {
       if (err.name === 'ValidationError' || err.name === 'CastError' || err.name === 'BadRequest') return res.status(CODE_BADREQUEST).send({ message: 'Переданы некорректные данные при получении карточки' });
-      if (err.name === 'Error') return res.status(err.errorCode).send({ message: err.message });
       return res.status(CODE_SERVERERROR).send({ message: 'Произошла ошибка' });
     });
 };
@@ -48,7 +42,7 @@ module.exports.deleteCardByIdController = (req, res) => {
     })
     .then((data) => res.status(CODE_OK).send({ data }))
     .catch((err) => {
-      if (err.name === 'ValidationError' || err.name === 'CastError' || err.name === 'BadRequest') return res.status(CODE_BADREQUEST).send({ message: 'Карточка с указанным _id не найдена' });
+      if (err.name === 'ValidationError') return res.status(CODE_BADREQUEST).send({ message: 'Невалидный ID' });
       if (err.name === 'Error') return res.status(err.errorCode).send({ message: err.message });
       return res.status(CODE_SERVERERROR).send({ message: err.name });
     });
@@ -67,7 +61,7 @@ module.exports.likeCardController = (req, res) => {
     })
     .then((data) => res.status(CODE_OK).send({ data }))
     .catch((err) => {
-      if (err.name === 'ValidationError' || err.name === 'CastError' || err.name === 'BadRequest') return res.status(CODE_BADREQUEST).send({ message: 'Переданы некорректные данные для постановки лайка' });
+      if (err.name === 'ValidationError') return res.status(CODE_BADREQUEST).send({ message: 'Невалидный ID' });
       if (err.name === 'Error') return res.status(err.errorCode).send({ message: err.message });
       return res.status(CODE_SERVERERROR).send({ message: 'Произошла ошибка' });
     });
@@ -86,7 +80,7 @@ module.exports.dislikeCardController = (req, res) => {
     })
     .then((data) => res.status(CODE_OK).send({ data }))
     .catch((err) => {
-      if (err.name === 'ValidationError' || err.name === 'CastError' || err.name === 'BadRequest') return res.status(CODE_BADREQUEST).send({ message: 'Переданы некорректные данные для снятия лайка' });
+      if (err.name === 'ValidationError') return res.status(CODE_BADREQUEST).send({ message: 'Невалидный ID' });
       if (err.name === 'Error') return res.status(err.errorCode).send({ message: err.message });
       return res.status(CODE_SERVERERROR).send({ message: 'Произошла ошибка' });
     });
