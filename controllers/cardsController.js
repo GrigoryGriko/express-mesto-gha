@@ -1,6 +1,7 @@
 const Card = require('../models/card');
 const {
   CODE_OK,
+  CODE_CREATED,
   CODE_BADREQUEST,
   CODE_NOTFOUND,
   CODE_SERVERERROR,
@@ -25,7 +26,7 @@ module.exports.createCardController = (req, res) => {
       error.statusCode = CODE_NOTFOUND;
       throw error;
     })
-    .then((data) => res.status(CODE_OK).send({ data }))
+    .then((data) => res.status(CODE_CREATED).send({ data }))
     .catch((err) => {
       if (err.name === 'ValidationError') return res.status(CODE_BADREQUEST).send({ message: 'Переданы некорректные данные при создании карточки' });
       if (err.name === 'Error') return res.status(err.errorCode).send({ message: err.message });
