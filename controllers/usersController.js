@@ -1,6 +1,7 @@
 const User = require('../models/user');
 const {
   CODE_OK,
+  CODE_CREATED,
   CODE_BADREQUEST,
   CODE_NOTFOUND,
   CODE_SERVERERROR,
@@ -34,7 +35,7 @@ module.exports.createUser = (req, res) => {
   const { name, about, avatar } = req.body;
 
   User.create({ name, about, avatar })
-    .then((data) => res.status(CODE_OK).send({ data }))
+    .then((data) => res.status(CODE_CREATED).send({ data }))
     .catch((err) => {
       if (err.name === 'ValidationError') return res.status(CODE_BADREQUEST).send({ message: 'Переданы некорректные данные при получении пользователя' });
       return res.status(CODE_SERVERERROR).send({ message: 'Произошла ошибка' });
