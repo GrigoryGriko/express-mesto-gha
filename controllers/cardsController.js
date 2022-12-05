@@ -28,7 +28,7 @@ module.exports.createCardController = (req, res) => {
     .then((data) => res.status(CODE_OK).send({ data }))
     .catch((err) => {
       if (err.name === 'ValidationError') return res.status(CODE_BADREQUEST).send({ message: 'Переданы некорректные данные при создании карточки' });
-      if (err.name === 'Error') return res.status(err.errorCode).send({ message: err.message });
+      if (err.name === 'Error') return res.status(err.statusCode).send({ message: err.message });
       return res.status(CODE_SERVERERROR).send({ message: 'Произошла ошибка' });
     });
 };
@@ -43,7 +43,7 @@ module.exports.deleteCardByIdController = (req, res) => {
     .then((data) => res.status(CODE_OK).send({ data }))
     .catch((err) => {
       if (err.name === 'ValidationError') return res.status(CODE_BADREQUEST).send({ message: 'Невалидный ID' });
-      if (err.name === 'Error') return res.status(err.errorCode).send({ message: err.message });
+      if (err.name === 'Error') return res.status(err.statusCode).send({ message: err.message });
       return res.status(CODE_SERVERERROR).send({ message: err.name });
     });
 };
@@ -62,7 +62,7 @@ module.exports.likeCardController = (req, res) => {
     .then((data) => res.status(CODE_OK).send({ data }))
     .catch((err) => {
       if (err.name === 'CastError') return res.status(CODE_BADREQUEST).send({ message: 'Невалидный ID' });
-      if (err.name === 'Error') return res.status(err.errorCode).send({ message: err.message });
+      if (err.name === 'Error') return res.status(err.statusCode).send({ message: err.message });
       return res.status(CODE_SERVERERROR).send({ message: 'Произошла ошибка' });
     });
 };
@@ -81,7 +81,7 @@ module.exports.dislikeCardController = (req, res) => {
     .then((data) => res.status(CODE_OK).send({ data }))
     .catch((err) => {
       if (err.name === 'CastError') return res.status(CODE_BADREQUEST).send({ message: 'Невалидный ID' });
-      if (err.name === 'Error') return res.status(err.errorCode).send({ message: err.message });
+      if (err.name === 'Error') return res.status(err.statusCode).send({ message: err.message });
       return res.status(CODE_SERVERERROR).send({ message: 'Произошла ошибка' });
     });
 };
