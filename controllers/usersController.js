@@ -43,12 +43,12 @@ module.exports.createUserController = (req, res) => {
 };
 
 module.exports.updateProfileController = (req, res) => {
-  const { Name, About } = req.body;
+  const { name, about } = req.body;
   User.findByIdAndUpdate(
     req.user._id,
     {
-      name: Name,
-      about: About,
+      name: name,
+      about: about,
     },
 
     {
@@ -70,10 +70,10 @@ module.exports.updateProfileController = (req, res) => {
 };
 
 module.exports.updateAvatarController = (req, res) => {
-  const { Avatar } = req.body;
+  const { avatar } = req.body;
   User.findByIdAndUpdate(
     req.user._id,
-    { avatar: Avatar },
+    { avatar: avatar },
 
     {
       new: true,
