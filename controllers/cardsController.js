@@ -1,9 +1,9 @@
 const Card = require('../models/card');
+const NotFoundError = require('../NotFoundError');
 const {
   CODE_OK,
   CODE_CREATED,
   CODE_BADREQUEST,
-  CODE_NOTFOUND,
   CODE_SERVERERROR,
 } = require('../constants/constants');
 
@@ -27,15 +27,11 @@ module.exports.createCard = (req, res) => {
 
 module.exports.deleteCardById = (req, res) => {
   Card.findByIdAndRemove(req.params.cardId)
-    .orFail(() => {
-      const error = new Error('Нет карточки по заданному id');
-      error.statusCode = CODE_NOTFOUND;
-      throw error;
-    })
+    .orFail(new NotFoundError(`Карточка с id '${req.params.cardId}' не найдена`))
     .then((data) => res.status(CODE_OK).send({ data }))
     .catch((err) => {
       if (err.name === 'CastError') return res.status(CODE_BADREQUEST).send({ message: 'Невалидный ID' });
-      if (err.name === 'Error') return res.status(err.statusCode).send({ message: err.message });
+      if (err.name === 'NotFoundError') return res.status(err.errorCode).send({ message: err.message });
       return res.status(CODE_SERVERERROR).send({ message: 'Произошла ошибка' });
     });
 };
@@ -46,15 +42,11 @@ module.exports.likeCard = (req, res) => {
     { $addToSet: { likes: req.user._id } },
     { new: true },
   )
-    .orFail(() => {
-      const error = new Error('Нет карточки по заданному id');
-      error.statusCode = CODE_NOTFOUND;
-      throw error;
-    })
+    .orFail(new NotFoundError(`Карточка с id '${req.params.cardId}' не найдена`))
     .then((data) => res.status(CODE_OK).send({ data }))
     .catch((err) => {
       if (err.name === 'CastError') return res.status(CODE_BADREQUEST).send({ message: 'Невалидный ID' });
-      if (err.name === 'Error') return res.status(err.statusCode).send({ message: err.message });
+      if (err.name === 'NotFoundError') return res.status(err.errorCode).send({ message: err.message });
       return res.status(CODE_SERVERERROR).send({ message: 'Произошла ошибка' });
     });
 };
@@ -65,15 +57,11 @@ module.exports.dislikeCard = (req, res) => {
     { $pull: { likes: req.user._id } },
     { new: true },
   )
-    .orFail(() => {
-      const error = new Error('Нет карточки по заданному id');
-      error.statusCode = CODE_NOTFOUND;
-      throw error;
-    })
+    .orFail(new NotFoundError(`Карточка с id '${req.params.cardId}' не найдена`))
     .then((data) => res.status(CODE_OK).send({ data }))
     .catch((err) => {
       if (err.name === 'CastError') return res.status(CODE_BADREQUEST).send({ message: 'Невалидный ID' });
-      if (err.name === 'Error') return res.status(err.statusCode).send({ message: err.message });
+      if (err.name === 'NotFoundError') return res.status(err.errorCode).send({ message: err.message });
       return res.status(CODE_SERVERERROR).send({ message: 'Произошла ошибка' });
     });
 };
