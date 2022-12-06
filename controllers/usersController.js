@@ -7,7 +7,7 @@ const {
   CODE_SERVERERROR,
 } = require('../constants/constants');
 
-module.exports.getAllUsersController = (req, res) => {
+module.exports.getAllUsers = (req, res) => {
   User.find({})
     .then((data) => res.status(CODE_OK).send({ data }))
     .catch((err) => {
@@ -16,7 +16,7 @@ module.exports.getAllUsersController = (req, res) => {
     });
 };
 
-module.exports.getUserByIdController = (req, res) => {
+module.exports.getUserById = (req, res) => {
   User.findById(req.params.userId)
     .orFail(() => {
       const error = new Error(`Пользователь с id '${req.params.userId}' не найден`);
@@ -31,7 +31,7 @@ module.exports.getUserByIdController = (req, res) => {
     });
 };
 
-module.exports.createUserController = (req, res) => {
+module.exports.createUser = (req, res) => {
   const { name, about, avatar } = req.body;
 
   User.create({ name, about, avatar })
@@ -42,7 +42,7 @@ module.exports.createUserController = (req, res) => {
     });
 };
 
-module.exports.updateProfileController = (req, res) => {
+module.exports.updateProfile = (req, res) => {
   const { name: Name, about: About } = req.body;
   User.findByIdAndUpdate(
     req.user._id,
@@ -69,7 +69,7 @@ module.exports.updateProfileController = (req, res) => {
     });
 };
 
-module.exports.updateAvatarController = (req, res) => {
+module.exports.updateAvatar = (req, res) => {
   const { avatar: Avatar } = req.body;
   User.findByIdAndUpdate(
     req.user._id,

@@ -7,7 +7,7 @@ const {
   CODE_SERVERERROR,
 } = require('../constants/constants');
 
-module.exports.getAllCardsController = (req, res) => {
+module.exports.getAllCards = (req, res) => {
   Card.find({})
     .populate(['owner', 'likes'])
     .then((data) => res.status(CODE_OK).send({ data }))
@@ -17,7 +17,7 @@ module.exports.getAllCardsController = (req, res) => {
     });
 };
 
-module.exports.createCardController = (req, res) => {
+module.exports.createCard = (req, res) => {
   const { name, link } = req.body;
 
   Card.create({ name, link, owner: req.user._id })
@@ -28,7 +28,7 @@ module.exports.createCardController = (req, res) => {
     });
 };
 
-module.exports.deleteCardByIdController = (req, res) => {
+module.exports.deleteCardById = (req, res) => {
   Card.findByIdAndRemove(req.params.cardId)
     .orFail(() => {
       const error = new Error('Нет карточки по заданному id');
@@ -43,7 +43,7 @@ module.exports.deleteCardByIdController = (req, res) => {
     });
 };
 
-module.exports.likeCardController = (req, res) => {
+module.exports.likeCard = (req, res) => {
   Card.findByIdAndUpdate(
     req.params.cardId,
     { $addToSet: { likes: req.user._id } },
@@ -62,7 +62,7 @@ module.exports.likeCardController = (req, res) => {
     });
 };
 
-module.exports.dislikeCardController = (req, res) => {
+module.exports.dislikeCard = (req, res) => {
   Card.findByIdAndUpdate(
     req.params.cardId,
     { $pull: { likes: req.user._id } },
