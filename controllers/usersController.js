@@ -10,10 +10,7 @@ const {
 module.exports.getAllUsers = (req, res) => {
   User.find({})
     .then((data) => res.status(CODE_OK).send({ data }))
-    .catch((err) => {
-      if (err.name === 'ValidationError' || err.name === 'CastError' || err.name === 'BadRequest') return res.status(CODE_BADREQUEST).send({ message: 'Переданы некорректные данные при получении пользователя' });
-      return res.status(500).send({ message: 'Произошла ошибка' });
-    });
+    .catch(() => res.status(CODE_SERVERERROR).send({ message: 'Произошла ошибка' }));
 };
 
 module.exports.getUserById = (req, res) => {
@@ -25,7 +22,7 @@ module.exports.getUserById = (req, res) => {
     })
     .then((data) => res.status(CODE_OK).send({ data }))
     .catch((err) => {
-      if (err.name === 'ValidationError' || err.name === 'CastError') return res.status(CODE_BADREQUEST).send({ message: 'Невалидный ID' });
+      if (err.name === 'CastError') return res.status(CODE_BADREQUEST).send({ message: 'Невалидный ID' });
       if (err.name === 'Error') return res.status(err.statusCode).send({ message: err.message });
       return res.status(CODE_SERVERERROR).send({ message: 'Произошла ошибка' });
     });
@@ -43,12 +40,12 @@ module.exports.createUser = (req, res) => {
 };
 
 module.exports.updateProfile = (req, res) => {
-  const { name: Name, about: About } = req.body;
+  const { name, about } = req.body;
   User.findByIdAndUpdate(
     req.user._id,
     {
-      name: Name,
-      about: About,
+      name,
+      about,
     },
 
     {
@@ -70,10 +67,12 @@ module.exports.updateProfile = (req, res) => {
 };
 
 module.exports.updateAvatar = (req, res) => {
-  const { avatar: Avatar } = req.body;
+  const { avatar } = req.body;
   User.findByIdAndUpdate(
     req.user._id,
-    { avatar: Avatar },
+    {
+      avatar,
+    },
 
     {
       new: true,

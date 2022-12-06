@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const usersRouter = require('./routes/usersRouter');
 const cardsRouter = require('./routes/cardsRouter');
+const CODE_NOTFOUND = require('./constants/constants');
 
 const { PORT = 3000 } = process.env;
 
@@ -24,7 +25,7 @@ app.use('/users', usersRouter);
 app.use('/cards', cardsRouter);
 
 app.use((req, res) => {
-  res.status(404).send({ message: 'Данный ресурс не найден' });
+  res.status(CODE_NOTFOUND).send({ message: 'Данный ресурс не найден' });
 });
 
 app.listen(PORT, () => {
