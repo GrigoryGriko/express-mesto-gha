@@ -24,15 +24,24 @@ module.exports.getUserById = (req, res) => {
     });
 };
 
-module.exports.createUser = (req, res) => {
-  const { name, about, avatar } = req.body;
+module.exports.createUser = (req, res, next) => {
+  const { name, about, avatar, email, password } = req.body;
+  if (!email || !password) return res.status(CODE_BADREQUEST).send({ message: 'Email или пароль не могут быть пустыми'});
 
-  User.create({ name, about, avatar })
-    .then((data) => res.status(CODE_CREATED).send({ data }))
-    .catch((err) => {
-      if (err.name === 'ValidationError') return res.status(CODE_BADREQUEST).send({ message: 'Переданы некорректные данные при получении пользователя' });
-      return res.status(CODE_SERVERERROR).send({ message: 'Произошла ошибка' });
-    });
+  bcrypt.hash(password, 12)
+    .then((hash) => {
+      User.create({ name, about, avatar, email, password: hash })
+        .then((data) => res.status(CODE_CREATED).send({ 
+          data: {
+            name, about, avatar, email,
+          },
+        }))
+        .catch((err) => {
+          if (err.name === 'ValidationError') return res.status(CODE_BADREQUEST).send({ message: 'Переданы некорректные данные при получении пользователя'});
+          return res.status(CODE_SERVERERROR).send({ message: 'Произошла ошибка' });
+          next(err);
+        });
+    }).catch(next);
 };
 
 module.exports.updateProfile = (req, res) => {
