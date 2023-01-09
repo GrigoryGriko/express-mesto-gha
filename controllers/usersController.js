@@ -75,11 +75,24 @@ module.exports.login = (req, res) => {
   User.findOne({ email })
     .then((user) => {
       if (!user) {
-        return Promise.reject(new NotFoundError('Пользователь с указанным email не найден'));
+        return Promise.reject(new NotFoundError('Неправильные почта или пароль'));
       }
-      /*также поиск по паролю, переведенному в хэш*/
+      
+      return bcrypt.compare(password, user.password);
     })
-}
+    .then((matched) => {
+      if (!matched) {
+        return Promise.reject(new NotFoundError('Неправильные почта или пароль'))
+      }
+
+      res.send({ message: 'Успешно!' })
+    })
+    .catch((err) => {
+      res
+        .status(401)
+        .send({message: err.message });
+    });
+};
 
 module.exports.createUser = (req, res) => {
   const { name, about, avatar, email, password } = req.body;
