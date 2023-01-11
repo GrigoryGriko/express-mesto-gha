@@ -6,6 +6,7 @@ const {
   CODE_BADREQUEST,
   CODE_SERVERERROR,
 } = require('../constants/constants');
+const user = require('../models/user');
 
 module.exports.getAllUsers = (req, res) => {
   User.find({})
@@ -85,7 +86,13 @@ module.exports.login = (req, res) => {
         return Promise.reject(new NotFoundError('Неправильные почта или пароль'))
       }
 
-      res.send({ message: 'Успешно!' })
+      const token = jwt.sign(
+        { _id: "636ba24e5340ce44501d467a" },
+        'super-strong-secret',
+        { expiresIn: 3600 }
+      );
+
+      res.send({ token }); 
     })
     .catch((err) => {
       res
@@ -101,11 +108,12 @@ module.exports.createUser = (req, res) => {
   bcrypt.hash(password, 12)
     .then((hash) => {
       User.create({ name, about, avatar, email, password: hash })
-        .then((data) => res.status(CODE_CREATED).send({ 
+        .then((data) => res.status(CODE_OK).send({ data }))
+        /*.then((data) => res.status(CODE_CREATED).send({ 
           data: {
             name, about, avatar, email,
           },
-        }))
+        }))*/
         .catch((err) => {
           if (err.name === 'ValidationError') return res.status(CODE_BADREQUEST).send({ message: 'Переданы некорректные данные при получении пользователя'});
           return res.status(CODE_SERVERERROR).send({ message: 'Произошла ошибка' });
