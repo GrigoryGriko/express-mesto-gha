@@ -16,7 +16,7 @@ module.exports.getAllUsers = (req, res) => {
 
 module.exports.getUserById = (req, res) => {
   User.findById(req.params.userId)
-    .orFail(new NotFoundError(`Карточка с id '${req.params.cardId}' не найдена`))
+    .orFail(new NotFoundError(`Пользователь с id '${req.params.cardId}' не найдена`))
     .then((data) => res.status(CODE_OK).send({ data }))
     .catch((err) => {
       if (err.name === 'CastError') return res.status(CODE_BADREQUEST).send({ message: 'Невалидный ID' });
@@ -24,6 +24,10 @@ module.exports.getUserById = (req, res) => {
       return res.status(CODE_SERVERERROR).send({ message: 'Произошла ошибка' });
     });
 };
+
+module.exports.getUserData = (req, res) => {
+  const {}    /*чекпоинт*/
+}
 
 module.exports.updateProfile = (req, res) => {
   const { name, about } = req.body;
@@ -88,7 +92,7 @@ module.exports.login = (req, res) => {
 
       const token = jwt.sign(
         { _id: "636ba24e5340ce44501d467a" },
-        'super-strong-secret',
+        'pro-letter-crypto',
         { expiresIn: 3600 }
       );
 
