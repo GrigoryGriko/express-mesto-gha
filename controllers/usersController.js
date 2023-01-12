@@ -26,7 +26,14 @@ module.exports.getUserById = (req, res) => {
 };
 
 module.exports.getUserData = (req, res) => {
-  const {}    /*чекпоинт*/
+  User.findById(token._id)  /*исправить*/
+  .orFail(new NotFoundError(`Пользователь не найдена`))
+  .then((data) => res.status(CODE_OK).send({ data }))
+  .catch((err) => {
+    if (err.name === 'CastError') return res.status(CODE_BADREQUEST).send({ message: 'Невалидный ID' });
+    if (err.name === 'NotFoundError') return res.status(err.errorCode).send({ message: err.message });
+    return res.status(CODE_SERVERERROR).send({ message: 'Произошла ошибка' });
+  });
 }
 
 module.exports.updateProfile = (req, res) => {
