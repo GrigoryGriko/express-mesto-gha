@@ -26,7 +26,7 @@ module.exports.getUserById = (req, res) => {
 };
 
 module.exports.getUserData = (req, res) => {
-  User.findById(token._id)  /*исправить*/
+  User.findById(req.user._id)  /*исправить*/
   .orFail(new NotFoundError(`Пользователь не найдена`))
   .then((data) => res.status(CODE_OK).send({ data }))
   .catch((err) => {
@@ -96,9 +96,9 @@ module.exports.login = (req, res) => {
       if (!matched) {
         return Promise.reject(new NotFoundError('Неправильные почта или пароль'))
       }
-
+//"636ba24e5340ce44501d467a"
       const token = jwt.sign(
-        { _id: "636ba24e5340ce44501d467a" },
+        { _id: req.user._id },
         'pro-letter-crypto',
         { expiresIn: 3600 }
       );

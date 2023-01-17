@@ -30,7 +30,7 @@ module.exports.deleteCardById = (req, res) => {
     .orFail(new NotFoundError(`Карточка с id '${req.params.cardId}' не найдена`))
     .then((data) => res.status(CODE_OK).send({ data }))
     .catch((err) => {
-      if (err.name === 'CastError') return res.status(CODE_BADREQUEST).send({ message: 'Невалидный ID' });
+      if (err.name === 'CastError' || req.params.cardId !== req.user._id) return res.status(CODE_BADREQUEST).send({ message: 'Невалидный ID' });
       if (err.name === 'NotFoundError') return res.status(err.errorCode).send({ message: err.message });
       return res.status(CODE_SERVERERROR).send({ message: 'Произошла ошибка' });
     });
