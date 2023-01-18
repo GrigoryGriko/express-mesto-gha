@@ -16,7 +16,7 @@ module.exports.getAllUsers = (req, res) => {
 
 module.exports.getUserById = (req, res) => {
   User.findById(req.params.userId)
-    .orFail(new NotFoundError(`Пользователь с id '${req.params.cardId}' не найдена`))
+    .orFail(new NotFoundError(`Пользователь с id '${req.params.cardId}' не найден`))
     .then((data) => res.status(CODE_OK).send({ data }))
     .catch((err) => {
       if (err.name === 'CastError') return res.status(CODE_BADREQUEST).send({ message: 'Невалидный ID' });
@@ -26,15 +26,15 @@ module.exports.getUserById = (req, res) => {
 };
 
 module.exports.getUserData = (req, res) => {
-  User.findById(req.user._id)  /*исправить*/
-  .orFail(new NotFoundError(`Пользователь не найдена`))
-  .then((data) => res.status(CODE_OK).send({ data }))
-  .catch((err) => {
-    if (err.name === 'CastError') return res.status(CODE_BADREQUEST).send({ message: 'Невалидный ID' });
-    if (err.name === 'NotFoundError') return res.status(err.errorCode).send({ message: err.message });
-    return res.status(CODE_SERVERERROR).send({ message: 'Произошла ошибка' });
-  });
-}
+  User.findById(req.user._id)
+    .orFail(new NotFoundError('Пользователь не найден'))
+    .then((data) => res.status(CODE_OK).send({ data }))
+    .catch((err) => {
+      if (err.name === 'CastError') return res.status(CODE_BADREQUEST).send({ message: 'Невалидный ID' });
+      if (err.name === 'NotFoundError') return res.status(err.errorCode).send({ message: err.message });
+      return res.status(CODE_SERVERERROR).send({ message: 'Произошла ошибка' });
+    });
+};
 
 module.exports.updateProfile = (req, res) => {
   const { name, about } = req.body;
@@ -119,7 +119,7 @@ module.exports.createUser = (req, res) => {
   bcrypt.hash(password, 12)
     .then((hash) => {
       User.create({ name, about, avatar, email, password: hash })
-        .then((data) => res.status(CODE_OK).send({ data }))
+        .then((data) => res.status(CODE_CREATED).send({ data }))
         /*.then((data) => res.status(CODE_CREATED).send({ 
           data: {
             name, about, avatar, email,

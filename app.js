@@ -4,7 +4,7 @@ const usersRouter = require('./routes/usersRouter');
 const cardsRouter = require('./routes/cardsRouter');
 const {
   login,
-  createUser
+  createUser,
 } = require('./controllers/usersController');
 const { CODE_NOTFOUND } = require('./constants/constants');
 
