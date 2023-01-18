@@ -1,3 +1,4 @@
+const bcrypt = require('bcryptjs');
 const User = require('../models/user');
 const NotFoundError = require('../NotFoundError');
 const {
@@ -6,7 +7,6 @@ const {
   CODE_BADREQUEST,
   CODE_SERVERERROR,
 } = require('../constants/constants');
-const user = require('../models/user');
 
 module.exports.getAllUsers = (req, res) => {
   User.find({})
@@ -89,7 +89,7 @@ module.exports.login = (req, res) => {
       if (!user) {
         return Promise.reject(new NotFoundError('Неправильные почта или пароль'));
       }
-      
+
       return bcrypt.compare(password, user.password);
     })
     .then((matched) => {
@@ -113,12 +113,25 @@ module.exports.login = (req, res) => {
 };
 
 module.exports.createUser = (req, res) => {
-  const { name, about, avatar, email, password } = req.body;
+  const {
+    name,
+    about,
+    avatar,
+    email,
+    password,
+  } = req.body;
+
   if (!email || !password) return res.status(CODE_BADREQUEST).send({ message: 'Email или пароль не могут быть пустыми'});
 
   bcrypt.hash(password, 12)
     .then((hash) => {
-      User.create({ name, about, avatar, email, password: hash })
+      User.create({
+        name,
+        about,
+        avatar,
+        email,
+        password: hash,
+      })
         .then((data) => res.status(CODE_CREATED).send({ data }))
         /*.then((data) => res.status(CODE_CREATED).send({ 
           data: {
@@ -129,6 +142,5 @@ module.exports.createUser = (req, res) => {
           if (err.name === 'ValidationError') return res.status(CODE_BADREQUEST).send({ message: 'Переданы некорректные данные при получении пользователя'});
           return res.status(CODE_SERVERERROR).send({ message: 'Произошла ошибка' });
         });
-    })
+    });
 };
-
