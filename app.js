@@ -20,12 +20,14 @@ mongoose.connect('mongodb://localhost:27017/mestodb');
 app.use('/users', usersRouter);
 app.use('/cards', cardsRouter);
 
+app.post('/signin', login);
+app.post('/signup', createUser);
+
 app.use((req, res) => {
   res.status(CODE_NOTFOUND).send({ message: 'Данный ресурс не найден' });
 });
 
-app.post('/signin', login);
-app.post('/signup', createUser);
+
 
 app.listen(PORT, () => {
   console.log(`Сервер работает (порт: ${PORT})`);

@@ -94,7 +94,7 @@ module.exports.login = (req, res) => {
     })
     .then((matched) => {
       if (!matched) {
-        return Promise.reject(new NotFoundError('Неправильные почта или пароль'))
+        return Promise.reject(new NotFoundError('Неправильные почта или пароль'));
       }
 //"636ba24e5340ce44501d467a"
       const token = jwt.sign(
@@ -103,7 +103,7 @@ module.exports.login = (req, res) => {
         { expiresIn: 3600 }
       );
 
-      res.send({ token }); 
+      res.send({ token });
     })
     .catch((err) => {
       res
