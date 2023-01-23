@@ -97,19 +97,19 @@ module.exports.login = (req, res) => {
       if (!matched) {
         return Promise.reject(new NotFoundError('Неправильные почта или пароль'));
       }
-//"636ba24e5340ce44501d467a"
       const token = jwt.sign(
-        { _id: user._id },
+        { _id: User._id },
         'pro-letter-crypto',
-        { expiresIn: 3600 }
+        { expiresIn: 3600 },
       );
 
       res.send({ token });
     })
     .catch((err) => {
+      console.log(err.message);
       res
         .status(401)
-        .send({message: err.message });
+        .send({ message: err.message });
     });
 };
 
