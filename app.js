@@ -27,8 +27,6 @@ app.use((req, res) => {
   res.status(CODE_NOTFOUND).send({ message: 'Данный ресурс не найден' });
 });
 
-
-
 app.listen(PORT, () => {
   console.log(`Сервер работает (порт: ${PORT})`);
 });

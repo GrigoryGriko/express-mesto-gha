@@ -1,3 +1,4 @@
+const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const User = require('../models/user');
 const NotFoundError = require('../NotFoundError');
@@ -98,7 +99,7 @@ module.exports.login = (req, res) => {
       }
 //"636ba24e5340ce44501d467a"
       const token = jwt.sign(
-        { _id: req.user._id },
+        { _id: user._id },
         'pro-letter-crypto',
         { expiresIn: 3600 }
       );
@@ -121,7 +122,7 @@ module.exports.createUser = (req, res) => {
     password,
   } = req.body;
 
-  if (!email || !password) return res.status(CODE_BADREQUEST).send({ message: 'Email или пароль не могут быть пустыми'});
+  if (!email || !password) return res.status(CODE_BADREQUEST).send({ message: 'Email или пароль не могут быть пустыми' });
 
   bcrypt.hash(password, 12)
     .then((hash) => {
