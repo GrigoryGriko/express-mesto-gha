@@ -2,6 +2,8 @@ const express = require('express');
 const mongoose = require('mongoose');
 const usersRouter = require('./routes/usersRouter');
 const cardsRouter = require('./routes/cardsRouter');
+const auth = require('./middlewares/auth');
+const errors = require('./middlewares/errors');
 const {
   login,
   createUser,
@@ -22,6 +24,11 @@ app.use('/cards', cardsRouter);
 
 app.post('/signin', login);
 app.post('/signup', createUser);
+app.post('/usersRouter', auth);
+
+app.use(auth);
+app.use(errors);
+app.use('/usersRouter', require('./routes/usersRouter'));
 
 app.use((req, res) => {
   res.status(CODE_NOTFOUND).send({ message: 'Данный ресурс не найден' });
