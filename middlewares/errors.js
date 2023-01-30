@@ -1,10 +1,12 @@
+const { CODE_NOTFOUND } = require('../constants/constants');
+
 module.exports = (err, req, res, next) => {
-  const { statusCode = 500, message } = err;
+  const { statusCode = CODE_NOTFOUND, message } = err;
 
   res
     .status(statusCode)
     .send({
-      message: statusCode === 500
+      message: statusCode === CODE_NOTFOUND
         ? 'На сервере произошла ошибка'
         : message,
     });

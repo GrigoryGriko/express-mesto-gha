@@ -8,7 +8,6 @@ const {
   login,
   createUser,
 } = require('./controllers/usersController');
-const { CODE_NOTFOUND } = require('./constants/constants');
 
 const { PORT = 3000 } = process.env;
 
@@ -29,10 +28,6 @@ app.post('/usersRouter', auth);
 app.use(auth);
 app.use(errors);
 app.use('/usersRouter', require('./routes/usersRouter'));
-
-app.use((req, res) => {
-  res.status(CODE_NOTFOUND).send({ message: 'Данный ресурс не найден' });
-});
 
 app.listen(PORT, () => {
   console.log(`Сервер работает (порт: ${PORT})`);

@@ -51,7 +51,7 @@ module.exports.updateProfile = (req, res) => {
       runValidators: true,
     },
   )
-    .orFail(new NotFoundError(`Карточка с id '${req.params.cardId}' не найдена`))
+    .orFail(new NotFoundError(`Пользователь с id '${req.params.cardId}' не найден`))
     .then((data) => res.status(CODE_OK).send({ data }))
     .catch((err) => {
       if (err.name === 'ValidationError' || err.name === 'CastError') return res.status(CODE_BADREQUEST).send({ message: 'Переданы некорректные данные при обновлении профиля' });
@@ -73,7 +73,7 @@ module.exports.updateAvatar = (req, res) => {
       runValidators: true,
     },
   )
-    .orFail(new NotFoundError(`Карточка с id '${req.params.cardId}' не найдена`))
+    .orFail(new NotFoundError(`Пользователь с id '${req.params.cardId}' не найден`))
     .then((data) => res.status(CODE_OK).send({ data }))
     .catch((err) => {
       if (err.name === 'ValidationError' || err.name === 'CastError') return res.status(CODE_BADREQUEST).send({ message: 'Переданы некорректные данные при обновлении профиля' });
