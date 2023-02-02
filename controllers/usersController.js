@@ -1,7 +1,9 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const User = require('../models/user');
-const NotFoundError = require('../NotFoundError');
+const NotFoundError = require('../errors/NotFoundError');
+const BadRequestError = require('../errors/BadRequestError');
+const FordibbenError = require('../errors/FordibbenError');
 const {
   CODE_OK,
   CODE_CREATED,
@@ -15,6 +17,22 @@ module.exports.getAllUsers = (req, res) => {
     .catch(() => res.status(CODE_SERVERERROR).send({ message: 'Произошла ошибка' }));
 };
 
+module.exports.getUserById = (req, res, next) => {
+  try {
+    const user = User.findById(req.params.userId);
+    if (user) {
+      res.status(CODE_OK).send(user);
+    } else {
+      throw new NotFoundError('Пользователь с указанным id не найден');
+    }
+  } catch (err) {
+    next(err);
+  }
+};
+
+
+
+/*
 module.exports.getUserById = (req, res) => {
   User.findById(req.params.userId)
     .orFail(new NotFoundError(`Пользователь с id '${req.params.cardId}' не найден`))
@@ -25,6 +43,8 @@ module.exports.getUserById = (req, res) => {
       return res.status(CODE_SERVERERROR).send({ message: 'Произошла ошибка' });
     });
 };
+*/
+
 
 module.exports.getUserData = (req, res) => {
   User.findById(req.user._id)
