@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const usersRouter = require('./routes/usersRouter');
 const cardsRouter = require('./routes/cardsRouter');
 const auth = require('./middlewares/auth');
-const errors = require('./middlewares/errors');
+const errorHandler = require('./middlewares/errorHandler');
 const {
   login,
   createUser,
@@ -26,7 +26,7 @@ app.post('/signup', createUser);
 app.post('/usersRouter', auth);
 
 app.use(auth);
-app.use(errors);
+app.use(errorHandler);
 app.use('/usersRouter', require('./routes/usersRouter'));
 
 app.listen(PORT, () => {
