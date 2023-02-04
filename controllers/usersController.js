@@ -2,8 +2,6 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const User = require('../models/user');
 const NotFoundError = require('../errors/NotFoundError');
-const BadRequestError = require('../errors/BadRequestError');
-const FordibbenError = require('../errors/FordibbenError');
 const {
   CODE_OK,
   CODE_CREATED,
@@ -13,38 +11,22 @@ const {
 
 module.exports.getAllUsers = (req, res) => {
   User.find({})
-    .then((data) => res.status(CODE_OK).send({ data }))
+    .then((data) => {
+      res.status(CODE_OK).send({ data });
+    })
     .catch(() => res.status(CODE_SERVERERROR).send({ message: 'Произошла ошибка' }));
 };
 
-module.exports.getUserById = (req, res, next) => {
-  try {
-    const user = User.findById(req.params.userId);
-    if (user) {
-      res.status(CODE_OK).send(user);
-    } else {
-      throw new NotFoundError('Пользователь с указанным id не найден');
-    }
-  } catch (err) {
-    next(err);
-  }
-};
 
-
-
-/*
 module.exports.getUserById = (req, res) => {
   User.findById(req.params.userId)
     .orFail(new NotFoundError(`Пользователь с id '${req.params.cardId}' не найден`))
     .then((data) => res.status(CODE_OK).send({ data }))
     .catch((err) => {
       if (err.name === 'CastError') return res.status(CODE_BADREQUEST).send({ message: 'Невалидный ID' });
-      if (err.name === 'NotFoundError') return res.status(err.errorCode).send({ message: err.message });
       return res.status(CODE_SERVERERROR).send({ message: 'Произошла ошибка' });
     });
 };
-*/
-
 
 module.exports.getUserData = (req, res) => {
   User.findById(req.user._id)
@@ -52,7 +34,6 @@ module.exports.getUserData = (req, res) => {
     .then((data) => res.status(CODE_OK).send({ data }))
     .catch((err) => {
       if (err.name === 'CastError') return res.status(CODE_BADREQUEST).send({ message: 'Невалидный ID' });
-      if (err.name === 'NotFoundError') return res.status(err.errorCode).send({ message: err.message });
       return res.status(CODE_SERVERERROR).send({ message: 'Произошла ошибка' });
     });
 };
@@ -75,7 +56,6 @@ module.exports.updateProfile = (req, res) => {
     .then((data) => res.status(CODE_OK).send({ data }))
     .catch((err) => {
       if (err.name === 'ValidationError' || err.name === 'CastError') return res.status(CODE_BADREQUEST).send({ message: 'Переданы некорректные данные при обновлении профиля' });
-      if (err.name === 'NotFoundError') return res.status(err.errorCode).send({ message: err.message });
       return res.status(CODE_SERVERERROR).send({ message: 'Произошла ошибка' });
     });
 };
@@ -97,7 +77,6 @@ module.exports.updateAvatar = (req, res) => {
     .then((data) => res.status(CODE_OK).send({ data }))
     .catch((err) => {
       if (err.name === 'ValidationError' || err.name === 'CastError') return res.status(CODE_BADREQUEST).send({ message: 'Переданы некорректные данные при обновлении профиля' });
-      if (err.name === 'NotFoundError') return res.status(err.errorCode).send({ message: err.message });
       return res.status(CODE_SERVERERROR).send({ message: 'Произошла ошибка' });
     });
 };
@@ -126,7 +105,6 @@ module.exports.login = (req, res) => {
       res.send({ token });
     })
     .catch((err) => {
-      console.log(err.message);
       res
         .status(401)
         .send({ message: err.message });
@@ -154,11 +132,6 @@ module.exports.createUser = (req, res) => {
         password: hash,
       })
         .then((data) => res.status(CODE_CREATED).send({ data }))
-        /*.then((data) => res.status(CODE_CREATED).send({ 
-          data: {
-            name, about, avatar, email,
-          },
-        }))*/
         .catch((err) => {
           if (err.name === 'ValidationError') return res.status(CODE_BADREQUEST).send({ message: 'Переданы некорректные данные при получении пользователя'});
           return res.status(CODE_SERVERERROR).send({ message: 'Произошла ошибка' });

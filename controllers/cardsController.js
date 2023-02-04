@@ -31,7 +31,6 @@ module.exports.deleteCardById = (req, res) => {
     .then((data) => res.status(CODE_OK).send({ data }))
     .catch((err) => {
       if (err.name === 'CastError' || req.params.cardId !== req.user._id) return res.status(CODE_BADREQUEST).send({ message: 'Невалидный ID' });
-      if (err.name === 'NotFoundError') return res.status(err.errorCode).send({ message: err.message });
       return res.status(CODE_SERVERERROR).send({ message: 'Произошла ошибка' });
     });
 };
@@ -46,7 +45,6 @@ module.exports.likeCard = (req, res) => {
     .then((data) => res.status(CODE_OK).send({ data }))
     .catch((err) => {
       if (err.name === 'CastError') return res.status(CODE_BADREQUEST).send({ message: 'Невалидный ID' });
-      if (err.name === 'NotFoundError') return res.status(err.errorCode).send({ message: err.message });
       return res.status(CODE_SERVERERROR).send({ message: 'Произошла ошибка' });
     });
 };
@@ -61,7 +59,6 @@ module.exports.dislikeCard = (req, res) => {
     .then((data) => res.status(CODE_OK).send({ data }))
     .catch((err) => {
       if (err.name === 'CastError') return res.status(CODE_BADREQUEST).send({ message: 'Невалидный ID' });
-      if (err.name === 'NotFoundError') return res.status(err.errorCode).send({ message: err.message });
       return res.status(CODE_SERVERERROR).send({ message: 'Произошла ошибка' });
     });
 };
