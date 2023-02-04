@@ -11,12 +11,9 @@ const {
 
 module.exports.getAllUsers = (req, res) => {
   User.find({})
-    .then((data) => {
-      res.status(CODE_OK).send({ data });
-    })
+    .then((data) => res.status(CODE_OK).send({ data }))
     .catch(() => res.status(CODE_SERVERERROR).send({ message: 'Произошла ошибка' }));
 };
-
 
 module.exports.getUserById = (req, res) => {
   User.findById(req.params.userId)
