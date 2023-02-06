@@ -4,6 +4,7 @@ const usersRouter = require('./routes/usersRouter');
 const cardsRouter = require('./routes/cardsRouter');
 const auth = require('./middlewares/auth');
 const errorHandler = require('./middlewares/errorHandler');
+const validateRegisterBody = require('./middlewares/validation')
 const {
   login,
   createUser,
@@ -22,7 +23,7 @@ app.use('/users', usersRouter);
 app.use('/cards', cardsRouter);
 
 app.post('/signin', login);
-app.post('/signup', createUser);
+app.post('/signup', validateRegisterBody, createUser);
 app.post('/usersRouter', auth);
 
 app.use(auth);
