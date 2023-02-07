@@ -29,7 +29,7 @@ const validateProfile = celebrate({
   },
 });
 
-const validateRegisterBody = celebrate({
+const validateUserBody = celebrate({
   body: {
     email: Joi.string().required().custom((value, helpers) => {
       if (validator.isEmail(value)) {
@@ -64,7 +64,7 @@ const validateAvatar = celebrate({
 
 module.exports = {
   validateObjId,
-  validateRegisterBody,
+  validateUserBody,
   validateProfile,
   validateAvatar,
 };
