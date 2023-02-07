@@ -17,7 +17,7 @@ module.exports.getAllUsers = (req, res) => {
 
 module.exports.getUserById = (req, res) => {
   User.findById(req.params.userId)
-    .orFail(new NotFoundError(`Пользователь с id '${req.params.cardId}' не найден`))
+    .orFail(new NotFoundError(`Пользователь с id '${req.params.userId}' не найден`))
     .then((data) => res.status(CODE_OK).send({ data }))
     .catch((err) => {
       if (err.name === 'CastError') return res.status(CODE_BADREQUEST).send({ message: 'Невалидный ID' });
