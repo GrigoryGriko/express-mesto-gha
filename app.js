@@ -34,5 +34,5 @@ app.use(errorHandler);
 app.listen(PORT, () => {
   console.log(`Сервер работает (порт: ${PORT})`);
 });
-  
+
 module.exports = app;
