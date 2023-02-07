@@ -4,7 +4,7 @@ const usersRouter = require('./routes/usersRouter');
 const cardsRouter = require('./routes/cardsRouter');
 const auth = require('./middlewares/auth');
 const errorHandler = require('./middlewares/errorHandler');
-const validateRegisterBody = require('./middlewares/validation');
+const { validateRegisterBody } = require('./middlewares/validation');
 const {
   login,
   createUser,
@@ -29,7 +29,6 @@ app.post('/usersRouter', auth);
 app.use(auth);
 app.use('/usersRouter', require('./routes/usersRouter'));
 
-//app.use(errors());
 app.use(errorHandler);
 
 app.listen(PORT, () => {

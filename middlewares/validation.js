@@ -20,5 +20,13 @@ const validateRegisterBody = celebrate({
       }),
   },
 });
+const validateAvatar = celebrate({
+  body: {
+    avatar: Joi.string().pattern(/^(https?:\/\/)?([\w-]{1,32}\.[\w-]{1,32})[^\s]$/),
+  },
+});
 
-module.exports = validateRegisterBody;
+module.exports = {
+  validateRegisterBody,
+  validateAvatar,
+};
