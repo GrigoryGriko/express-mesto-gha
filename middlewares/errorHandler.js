@@ -1,3 +1,4 @@
+/* eslint-disable consistent-return */
 const { CelebrateError } = require('celebrate');
 const { CODE_SERVERERROR } = require('../constants/constants');
 
