@@ -1,8 +1,10 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const { errors } = require('celebrate');
 const usersRouter = require('./routes/usersRouter');
 const cardsRouter = require('./routes/cardsRouter');
 const auth = require('./middlewares/auth');
+
 const errorHandler = require('./middlewares/errorHandler');
 const { validateUserBody } = require('./middlewares/validation');
 const {
@@ -30,6 +32,7 @@ app.post('/usersRouter', auth);
 
 app.use('/usersRouter', require('./routes/usersRouter'));
 
+app.use(errors());
 app.use(errorHandler);
 
 app.listen(PORT, () => {
