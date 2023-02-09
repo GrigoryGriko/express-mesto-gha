@@ -1,7 +1,7 @@
 const { celebrate, Joi } = require('celebrate');
 const validator = require('validator');
 
-const validateObjId = celebrate({
+const validateUserId = celebrate({
   params: {
     userId: Joi.string().required().min(2).max(30)
       .messages({
@@ -48,6 +48,7 @@ const validateUserBody = celebrate({
       }),
   },
 });
+
 const validateAvatar = celebrate({
   body: {
     avatar: Joi.string().required().custom((value, helpers) => {
@@ -62,8 +63,41 @@ const validateAvatar = celebrate({
   },
 });
 
+const validateCardBody = celebrate({
+  body: {
+    name: Joi.string().required().min(2).max(30)
+      .messages({
+        'string.min': 'Минимальная длинна поля name - 2',
+        'string.max': 'Максимальная длинна поля name - 30',
+        'any.required': 'Поле name должно быть заполнено',
+      }),
+    link: Joi.string().required().custom((value, helpers) => {
+      if (validator.isURL(value)) {
+        return value;
+      }
+      return helpers.message('Невалидный url');
+    })
+      .messages({
+        'any.required': 'Поле url должно быть заполнено',
+      }),
+  },
+});
+
+const validateCardId = celebrate({
+  params: {
+    cardId: Joi.string().required().min(2).max(30)
+      .messages({
+        'string.min': 'Минимальная длинна id карточки - 2',
+        'string.max': 'Максимальная длинна id карточки - 30',
+        'any.required': 'Id карточки не указан',
+      }),
+  },
+});
+
 module.exports = {
-  validateObjId,
+  validateCardId,
+  validateCardBody,
+  validateUserId,
   validateUserBody,
   validateProfile,
   validateAvatar,
