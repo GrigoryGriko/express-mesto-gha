@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const User = require('../models/user');
 const NotFoundError = require('../errors/NotFoundError');
+const CastError = require('../errors/CastError');
 const {
   CODE_OK,
   CODE_CREATED,
@@ -10,20 +11,31 @@ const {
   CODE_SERVERERROR,
 } = require('../constants/constants');
 
-module.exports.getAllUsers = (req, res) => {
-  User.find({})
-    .then((data) => res.status(CODE_OK).send({ data }))
-    .catch(() => res.status(CODE_SERVERERROR).send({ message: 'Произошла ошибка' }));
+module.exports.getAllUsers = async (req, res, next) => {
+  try {
+    const user = await User.find({});
+    if (user) {
+      res.status(CODE_OK).send({ user });
+    } else {
+      throw new NotFoundError('Пользователи не найдены');
+    }
+  } catch (err) {
+    next(err);
+  }
 };
 
-module.exports.getUserById = (req, res) => {
-  User.findById(req.params.userId)
-    .orFail(new NotFoundError(`Пользователь с id '${req.params.userId}' не найден`))
-    .then((data) => res.status(CODE_OK).send({ data }))
-    .catch((err) => {
-      if (err.name === 'CastError') return res.status(CODE_BADREQUEST).send({ message: 'Невалидный ID' });
-      return res.status(CODE_SERVERERROR).send({ message: 'Произошла ошибка' });
-    });
+module.exports.getUserById = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.params.userId);
+    if (user) {
+      res.status(CODE_OK).send({ user });
+    } else {
+      throw new NotFoundError(`Пользователь с id '${req.params.userId}' не найден`);
+    }
+  } catch (err) {
+    if (err.name === 'CastError') return next(new CastError('Невалидный ID'));
+    next(err);
+  }
 };
 
 module.exports.getUserData = (req, res) => {
