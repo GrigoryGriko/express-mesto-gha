@@ -10,7 +10,7 @@ const {
   CODE_BADREQUEST,
   CODE_SERVERERROR,
 } = require('../constants/constants');
-
+ 
 module.exports.getAllUsers = async (req, res, next) => {
   try {
     const user = await User.find({});
