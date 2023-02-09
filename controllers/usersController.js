@@ -8,8 +8,6 @@ const UnauthorizedError = require('../errors/UnauthorizedError');
 const {
   CODE_OK,
   CODE_CREATED,
-  CODE_BADREQUEST,
-  CODE_SERVERERROR,
 } = require('../constants/constants');
 
 module.exports.getAllUsers = async (req, res, next) => {

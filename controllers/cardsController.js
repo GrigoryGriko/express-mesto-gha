@@ -1,5 +1,7 @@
+/* eslint-disable consistent-return */
 const Card = require('../models/card');
 const NotFoundError = require('../errors/NotFoundError');
+const CastError = require('../errors/CastError');
 const {
   CODE_OK,
   CODE_CREATED,
@@ -7,22 +9,33 @@ const {
   CODE_SERVERERROR,
 } = require('../constants/constants');
 
-module.exports.getAllCards = (req, res) => {
-  Card.find({})
-    .populate(['owner', 'likes'])
-    .then((data) => res.status(CODE_OK).send({ data }))
-    .catch(() => res.status(CODE_SERVERERROR).send({ message: 'Произошла ошибка' }));
+module.exports.getAllCards = async (req, res, next) => {
+  try {
+    const card = await Card.find({}).populate(['owner', 'likes']);
+    if (card) {
+      res.status(CODE_OK).send({ card });
+    } else {
+      throw new NotFoundError('Карточки не найдены');
+    }
+  } catch (err) {
+    next(err);
+  }
 };
 
-module.exports.createCard = (req, res) => {
+module.exports.createCard = async (req, res, next) => {
   const { name, link } = req.body;
 
-  Card.create({ name, link, owner: req.user._id })
-    .then((data) => res.status(CODE_CREATED).send({ data }))
-    .catch((err) => {
-      if (err.name === 'ValidationError') return res.status(CODE_BADREQUEST).send({ message: 'Переданы некорректные данные при создании карточки' });
-      return res.status(CODE_SERVERERROR).send({ message: 'Произошла ошибка' });
-    });
+  try {
+    const card = await Card.create({ name, link, owner: req.user._id });
+    if (card) {
+      res.status(CODE_CREATED).send({ card });
+    } else {
+      throw new NotFoundError('Карточки не найдены');
+    }
+  } catch (err) {
+    if (err.name === 'ValidationError') return next(new CastError('Невалидный ID'));
+    next(err);
+  }
 };
 
 module.exports.deleteCardById = (req, res) => {
