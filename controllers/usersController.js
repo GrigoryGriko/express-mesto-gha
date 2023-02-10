@@ -5,6 +5,7 @@ const User = require('../models/user');
 const NotFoundError = require('../errors/NotFoundError');
 const CastError = require('../errors/CastError');
 const UnauthorizedError = require('../errors/UnauthorizedError');
+const ConflictingRequestError = require('../errors/ConflictingRequestError');
 const {
   CODE_OK,
   CODE_CREATED,
@@ -160,7 +161,9 @@ module.exports.createUser = async (req, res, next) => {
         }
       });
   } catch (err) {
-    if (err.name === 'ValidationError') return next(new CastError('Переданы некорректные данные при обновлении профиля'));
+    if (err.code === 11000) {
+      return next(new ConflictingRequestError('Данный email уже существует'));
+    } if (err.name === 'ValidationError') return next(new CastError('Переданы некорректные данные при обновлении профиля'));
     next(err);
   }
 };
