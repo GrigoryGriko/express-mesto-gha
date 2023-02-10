@@ -5,8 +5,6 @@ const CastError = require('../errors/CastError');
 const {
   CODE_OK,
   CODE_CREATED,
-  CODE_BADREQUEST,
-  CODE_SERVERERROR,
 } = require('../constants/constants');
 
 module.exports.getAllCards = async (req, res, next) => {
@@ -38,40 +36,52 @@ module.exports.createCard = async (req, res, next) => {
   }
 };
 
-module.exports.deleteCardById = (req, res) => {
-  Card.findByIdAndRemove(req.params.cardId)
-    .orFail(new NotFoundError(`Карточка с id '${req.params.cardId}' не найдена`))
-    .then((data) => res.status(CODE_OK).send({ data }))
-    .catch((err) => {
-      if (err.name === 'CastError' || req.params.cardId !== req.user._id) return res.status(CODE_BADREQUEST).send({ message: 'Невалидный ID' });
-      return res.status(CODE_SERVERERROR).send({ message: 'Произошла ошибка' });
-    });
+module.exports.deleteCardById = async (req, res, next) => {
+  try {
+    const card = await Card.findByIdAndRemove(req.params.cardId);
+    if (card) {
+      res.status(CODE_OK).send({ card });
+    } else {
+      throw new NotFoundError(`Карточка с id '${req.params.cardId}' не найдена`);
+    }
+  } catch (err) {
+    if (err.name === 'CastError' || req.params.cardId !== req.user._id) return next(new CastError('Невалидный ID'));
+    next(err);
+  }
 };
 
-module.exports.likeCard = (req, res) => {
-  Card.findByIdAndUpdate(
-    req.params.cardId,
-    { $addToSet: { likes: req.user._id } },
-    { new: true },
-  )
-    .orFail(new NotFoundError(`Карточка с id '${req.params.cardId}' не найдена`))
-    .then((data) => res.status(CODE_OK).send({ data }))
-    .catch((err) => {
-      if (err.name === 'CastError') return res.status(CODE_BADREQUEST).send({ message: 'Невалидный ID' });
-      return res.status(CODE_SERVERERROR).send({ message: 'Произошла ошибка' });
-    });
+module.exports.likeCard = async (req, res, next) => {
+  try {
+    const card = await Card.findByIdAndUpdate(
+      req.params.cardId,
+      { $addToSet: { likes: req.user._id } },
+      { new: true },
+    );
+    if (card) {
+      res.status(CODE_OK).send({ card });
+    } else {
+      throw new NotFoundError(`Карточка с id '${req.params.cardId}' не найдена`);
+    }
+  } catch (err) {
+    if (err.name === 'CastError') return next(new CastError('Невалидный ID'));
+    next(err);
+  }
 };
 
-module.exports.dislikeCard = (req, res) => {
-  Card.findByIdAndUpdate(
-    req.params.cardId,
-    { $pull: { likes: req.user._id } },
-    { new: true },
-  )
-    .orFail(new NotFoundError(`Карточка с id '${req.params.cardId}' не найдена`))
-    .then((data) => res.status(CODE_OK).send({ data }))
-    .catch((err) => {
-      if (err.name === 'CastError') return res.status(CODE_BADREQUEST).send({ message: 'Невалидный ID' });
-      return res.status(CODE_SERVERERROR).send({ message: 'Произошла ошибка' });
-    });
+module.exports.dislikeCard = async (req, res, next) => {
+  try {
+    const card = await Card.findByIdAndUpdate(
+      req.params.cardId,
+      { $pull: { likes: req.user._id } },
+      { new: true },
+    );
+    if (card) {
+      res.status(CODE_OK).send({ card });
+    } else {
+      throw new NotFoundError(`Карточка с id '${req.params.cardId}' не найдена`);
+    }
+  } catch (err) {
+    if (err.name === 'CastError') return next(new CastError('Невалидный ID'));
+    next(err);
+  }
 };
