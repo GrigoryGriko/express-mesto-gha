@@ -2,6 +2,7 @@
 const Card = require('../models/card');
 const NotFoundError = require('../errors/NotFoundError');
 const CastError = require('../errors/CastError');
+const FordibbenError = require('../errors/FordibbenError');
 const {
   CODE_OK,
   CODE_CREATED,
@@ -45,7 +46,8 @@ module.exports.deleteCardById = async (req, res, next) => {
       throw new NotFoundError(`Карточка с id '${req.params.cardId}' не найдена`);
     }
   } catch (err) {
-    if (err.name === 'CastError' || req.params.cardId !== req.user._id) return next(new CastError('Невалидный ID'));
+    if (err.name === 'CastError') return next(new CastError('Невалидный ID'));
+    if (err.name === 'FordibbenError' || req.params.cardId !== req.user._id) return next(new FordibbenError('Запрещено удалять не свою карточку'));
     next(err);
   }
 };
