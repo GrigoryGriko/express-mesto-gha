@@ -128,6 +128,7 @@ module.exports.login = async (req, res, next) => {
       });
   } catch (err) {
     if (err.name === 'UnauthorizedError') return next(new UnauthorizedError(err.message));
+    if (err.name === 'ValidationError') return next(new CastError('Переданы некорректные данные'));
     next(err);
   }
 };
@@ -141,7 +142,7 @@ module.exports.createUser = async (req, res, next) => {
     password,
   } = req.body;
 
-  if (!email || !password) return next(new CastError('Переданы некорректные данные при обновлении профиля'));
+  if (!email || !password) return next(new CastError('Не все поля заполнены'));
 
   try {
     const user = await bcrypt.hash(password, 12)
@@ -161,9 +162,8 @@ module.exports.createUser = async (req, res, next) => {
         }
       });
   } catch (err) {
-    if (err.code === 11000) {
-      return next(new ConflictingRequestError('Данный email уже существует'));
-    } if (err.name === 'ValidationError') return next(new CastError('Переданы некорректные данные при обновлении профиля'));
+    if (err.code === 11000) return next(new ConflictingRequestError('Данный email уже существует'));
+    if (err.name === 'ValidationError') return next(new CastError('Переданы некорректные данные'));
     next(err);
   }
 };
