@@ -108,24 +108,22 @@ module.exports.login = async (req, res, next) => {
   const { email, password } = req.body;
 
   try {
-    await User.findOne({ email }).select('+password')
-      .then((user) => {
-        if (!user) {
-          throw new NotFoundError('Неправильные почта или пароль');
-        }
-        return bcrypt.compare(password, user.password);
-      })
-      .then((matched) => {
-        if (!matched) {
-          throw new NotFoundError('Неправильные почта или пароль');
-        }
+    const user = await User.findOne({ email }).select('+password');
+    if (!user) {
+      throw new NotFoundError('Неправильные почта или пароль');
+    } else {
+      const matched = await bcrypt.compare(password, user.password);
+      if (!matched) {
+        throw new NotFoundError('Неправильные почта или пароль');
+      } else {
         const token = jwt.sign(
           { _id: User._id },
           'pro-letter-crypto',
           { expiresIn: 3600 },
         );
         res.send({ token });
-      });
+      }
+    }
   } catch (err) {
     if (err.name === 'UnauthorizedError') return next(new UnauthorizedError(err.message));
     if (err.name === 'ValidationError') return next(new CastError('Переданы некорректные данные'));
