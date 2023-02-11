@@ -121,6 +121,15 @@ module.exports.login = async (req, res, next) => {
           'pro-letter-crypto',
           { expiresIn: 3600 },
         );
+
+        res
+          .cookie('jwt', token, {
+            maxAge: 3600000,
+            httpOnly: true,
+            sameSite: true,
+          })
+          .end();
+
         res.send({ token });
       }
     }
