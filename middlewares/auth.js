@@ -15,7 +15,7 @@ module.exports = (req, res, next) => {
   try {
     payload = jwt.verify(token, 'pro-letter-crypto');
   } catch (err) {
-    if (err.name === 'UnauthorizedError') return next(new UnauthorizedError('Необходима авторизация'));
+    if (err.code === 401) return next(new UnauthorizedError('Необходима авторизация'));
     next(err);
   }
 
