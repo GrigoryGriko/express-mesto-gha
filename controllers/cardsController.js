@@ -3,7 +3,6 @@ const Card = require('../models/card');
 const NotFoundError = require('../errors/NotFoundError');
 const CastError = require('../errors/CastError');
 const FordibbenError = require('../errors/FordibbenError');
-const UnauthorizedError = require('../errors/UnauthorizedError');
 const {
   CODE_OK,
   CODE_CREATED,
@@ -18,7 +17,6 @@ module.exports.getAllCards = async (req, res, next) => {
       throw new NotFoundError('Карточки не найдены');
     }
   } catch (err) {
-    if (err.name === 'UnauthorizedError') return next(new UnauthorizedError(err.message));
     next(err);
   }
 };
@@ -34,7 +32,6 @@ module.exports.createCard = async (req, res, next) => {
       throw new NotFoundError('Карточки не найдены');
     }
   } catch (err) {
-    if (err.name === 'UnauthorizedError') return next(new UnauthorizedError(err.message));
     if (err.name === 'ValidationError') return next(new CastError('Невалидный ID'));
     next(err);
   }
@@ -49,7 +46,6 @@ module.exports.deleteCardById = async (req, res, next) => {
       throw new NotFoundError(`Карточка с id '${req.params.cardId}' не найдена`);
     }
   } catch (err) {
-    if (err.name === 'UnauthorizedError') return next(new UnauthorizedError(err.message));
     if (err.name === 'CastError') return next(new CastError('Невалидный ID'));
     if (err.name === 'FordibbenError' || req.params.cardId !== req.user._id) return next(new FordibbenError('Запрещено удалять не свою карточку'));
     next(err);
@@ -69,7 +65,6 @@ module.exports.likeCard = async (req, res, next) => {
       throw new NotFoundError(`Карточка с id '${req.params.cardId}' не найдена`);
     }
   } catch (err) {
-    if (err.name === 'UnauthorizedError') return next(new UnauthorizedError(err.message));
     if (err.name === 'CastError') return next(new CastError('Невалидный ID'));
     next(err);
   }
@@ -88,7 +83,6 @@ module.exports.dislikeCard = async (req, res, next) => {
       throw new NotFoundError(`Карточка с id '${req.params.cardId}' не найдена`);
     }
   } catch (err) {
-    if (err.name === 'UnauthorizedError') return next(new UnauthorizedError(err.message));
     if (err.name === 'CastError') return next(new CastError('Невалидный ID'));
     next(err);
   }
