@@ -20,6 +20,7 @@ module.exports.getAllUsers = async (req, res, next) => {
       throw new NotFoundError('Пользователи не найдены');
     }
   } catch (err) {
+    if (err.name === 'UnauthorizedError') return next(new UnauthorizedError(err.message));
     next(err);
   }
 };
@@ -33,6 +34,7 @@ module.exports.getUserById = async (req, res, next) => {
       throw new NotFoundError(`Пользователь с id '${req.params.userId}' не найден`);
     }
   } catch (err) {
+    if (err.name === 'UnauthorizedError') return next(new UnauthorizedError(err.message));
     if (err.name === 'CastError') return next(new CastError('Невалидный ID'));
     next(err);
   }
@@ -47,6 +49,7 @@ module.exports.getUserData = async (req, res, next) => {
       throw new NotFoundError(`Пользователь с id '${req.params.userId}' не найден`);
     }
   } catch (err) {
+    if (err.name === 'UnauthorizedError') return next(new UnauthorizedError(err.message));
     if (err.name === 'CastError') return next(new CastError('Невалидный ID'));
     next(err);
   }
@@ -73,6 +76,7 @@ module.exports.updateProfile = async (req, res, next) => {
       throw new NotFoundError(`Пользователь с id '${req.params.userId}' не найден`);
     }
   } catch (err) {
+    if (err.name === 'UnauthorizedError') return next(new UnauthorizedError(err.message));
     if (err.name === 'ValidationError' || err.name === 'CastError') return next(new CastError('Переданы некорректные данные при обновлении профиля'));
     next(err);
   }
@@ -99,6 +103,7 @@ module.exports.updateAvatar = async (req, res, next) => {
       throw new NotFoundError(`Пользователь с id '${req.params.userId}' не найден`);
     }
   } catch (err) {
+    if (err.name === 'UnauthorizedError') return next(new UnauthorizedError(err.message));
     if (err.name === 'ValidationError' || err.name === 'CastError') return next(new CastError('Переданы некорректные данные при обновлении профиля'));
     next(err);
   }
@@ -132,7 +137,6 @@ module.exports.login = async (req, res, next) => {
       }
     }
   } catch (err) {
-    if (err.name === 'UnauthorizedError') return next(new UnauthorizedError(err.message));
     if (err.name === 'ValidationError') return next(new CastError('Переданы некорректные данные'));
     next(err);
   }
