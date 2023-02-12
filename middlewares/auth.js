@@ -1,14 +1,12 @@
 /* eslint-disable consistent-return */
 const jwt = require('jsonwebtoken');
-const { CODE_UNAUTHORIZED } = require('../constants/constants');
+const UnauthorizedError = require('../errors/UnauthorizedError');
 
 module.exports = (req, res, next) => {
   const { cookie } = req.headers;
 
   if (!cookie || !cookie.startsWith('jwt=')) {
-    return res
-      .status(CODE_UNAUTHORIZED)
-      .send({ message: 'Необходима авторизация1' });
+    return next(new UnauthorizedError('Необходима авторизация'));
   }
 
   const token = cookie.replace('jwt=', '');
@@ -17,9 +15,8 @@ module.exports = (req, res, next) => {
   try {
     payload = jwt.verify(token, 'pro-letter-crypto');
   } catch (err) {
-    return res
-      .status(CODE_UNAUTHORIZED)
-      .send({ message: 'Необходима авторизация2' });
+    if (err.name === 'UnauthorizedError') return next(new UnauthorizedError('Необходима авторизация'));
+    next(err);
   }
 
   req.user = payload;

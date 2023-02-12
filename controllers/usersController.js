@@ -129,8 +129,6 @@ module.exports.login = async (req, res, next) => {
             sameSite: true,
           })
           .end();
-
-        res.send({ token });
       }
     }
   } catch (err) {
