@@ -20,7 +20,7 @@ module.exports.getAllUsers = async (req, res, next) => {
       throw new NotFoundError('Пользователи не найдены');
     }
   } catch (err) {
-    if (err.name === 'UnauthorizedError') return next(new UnauthorizedError(err.message));
+    if (err.code === 401) return next(new UnauthorizedError(err.message));
     next(err);
   }
 };
