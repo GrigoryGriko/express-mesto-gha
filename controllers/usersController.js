@@ -162,7 +162,6 @@ module.exports.createUser = async (req, res, next) => {
       });
 
       if (user) {
-        delete user.password;
         res.status(CODE_CREATED).send({ user });
       } else {
         throw new NotFoundError('Пользователи не найдены');
