@@ -46,26 +46,21 @@ const validateUserRegister = celebrate({
         'string.max': 'Максимальная длинна пароля 30 символов',
         'any.required': 'Пароль должен быть заполнен',
       }),
-    avatar: Joi.string().required().custom((value, helpers) => {
+    avatar: Joi.string().custom((value, helpers) => {
       if (validator.isURL(value)) {
         return value;
       }
       return helpers.message('Невалидный url');
-    })
-      .messages({
-        'any.required': 'Поле url должно быть заполнено',
-      }),
-    name: Joi.string().required().min(2).max(30)
+    }),
+    name: Joi.string().min(2).max(30)
       .messages({
         'string.min': 'Минимальная длинна поля name - 2',
         'string.max': 'Максимальная длинна поля name - 30',
-        'any.required': 'Поле name должно быть заполнено',
       }),
-    about: Joi.string().required().min(2).max(30)
+    about: Joi.string().min(2).max(30)
       .messages({
         'string.min': 'Минимальная длинна поля about - 2',
         'string.max': 'Максимальная длинна поля about - 30',
-        'any.required': 'Поле about должно быть заполнено',
       }),
   },
 });
