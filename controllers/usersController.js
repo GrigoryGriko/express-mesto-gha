@@ -5,6 +5,7 @@ const User = require('../models/user');
 const NotFoundError = require('../errors/NotFoundError');
 const CastError = require('../errors/CastError');
 const ConflictingRequestError = require('../errors/ConflictingRequestError');
+const UnauthorizedError = require('../errors/UnauthorizedError');
 const {
   CODE_OK,
   CODE_CREATED,
@@ -133,6 +134,7 @@ module.exports.login = async (req, res, next) => {
     }
   } catch (err) {
     if (err.name === 'ValidationError') return next(new CastError('Переданы некорректные данные'));
+    if (err.name === 'UnauthorizedError') return next(new UnauthorizedError('Необходима авторизация'));
     next(err);
   }
 };
