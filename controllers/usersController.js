@@ -128,6 +128,7 @@ module.exports.login = async (req, res, next) => {
             sameSite: true,
           })
           .end();
+        res.status(CODE_OK).send({ user });
       }
     }
   } catch (err) {
@@ -159,6 +160,7 @@ module.exports.createUser = async (req, res, next) => {
       });
 
       if (user) {
+        user.password = '';
         res.status(CODE_CREATED).send({ user });
       } else {
         throw new NotFoundError('Пользователи не найдены');
