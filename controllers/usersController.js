@@ -129,12 +129,11 @@ module.exports.login = async (req, res, next) => {
             sameSite: true,
           })
           .end();
-        res.status(CODE_OK).send({ user });
+        res.status(CODE_OK).send(JSON.parse(user));
       }
     }
   } catch (err) {
     if (err.name === 'ValidationError') return next(new CastError('Переданы некорректные данные'));
-    if (err.name === 'UnauthorizedError') return next(new UnauthorizedError('Необходима авторизация'));
     next(err);
   }
 };
