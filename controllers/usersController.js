@@ -5,7 +5,6 @@ const User = require('../models/user');
 const NotFoundError = require('../errors/NotFoundError');
 const CastError = require('../errors/CastError');
 const ConflictingRequestError = require('../errors/ConflictingRequestError');
-const UnauthorizedError = require('../errors/UnauthorizedError');
 const {
   CODE_OK,
   CODE_CREATED,
@@ -40,11 +39,12 @@ module.exports.getUserById = async (req, res, next) => {
 
 module.exports.getUserData = async (req, res, next) => {
   try {
+    console.log(req.user);
     const user = await User.findById(req.user._id);
     if (user) {
       res.status(CODE_OK).send({ user });
     } else {
-      throw new NotFoundError(`Пользователь с id '${req.params.userId}' не найден`);
+      throw new NotFoundError(`Пользователь с id '${req.user._id}' не найден`);
     }
   } catch (err) {
     if (err.name === 'CastError') return next(new CastError('Невалидный ID'));
@@ -127,9 +127,9 @@ module.exports.login = async (req, res, next) => {
             maxAge: 3600000,
             httpOnly: true,
             sameSite: true,
-          })
-          .end();
-        res.status(CODE_OK).send(JSON.parse(user));
+          });
+
+        res.status(CODE_OK).send({ user });
       }
     }
   } catch (err) {
