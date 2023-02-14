@@ -39,7 +39,6 @@ module.exports.getUserById = async (req, res, next) => {
 
 module.exports.getUserData = async (req, res, next) => {
   try {
-    console.log(req.user);
     const user = await User.findById(req.user._id);
     if (user) {
       res.status(CODE_OK).send({ user });
@@ -117,7 +116,7 @@ module.exports.login = async (req, res, next) => {
         throw new NotFoundError('Неправильные почта или пароль');
       } else {
         const token = jwt.sign(
-          { _id: User._id },
+          { _id: user._id },
           'pro-letter-crypto',
           { expiresIn: 3600 },
         );

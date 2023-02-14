@@ -32,7 +32,7 @@ module.exports.createCard = async (req, res, next) => {
       throw new NotFoundError('Карточки не найдены');
     }
   } catch (err) {
-    if (err.name === 'ValidationError') return next(new CastError('Невалидный ID'));
+    if (err.name === 'ValidationError') return next(new CastError('Ошибка валидации'));
     next(err);
   }
 };
