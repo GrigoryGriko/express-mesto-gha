@@ -47,7 +47,7 @@ module.exports.deleteCardById = async (req, res, next) => {
     }
   } catch (err) {
     if (err.name === 'CastError') return next(new CastError('Невалидный ID'));
-    if (err.code === 'FordibbenError' && req.params.cardId !== req.user._id) return next(new FordibbenError('Запрещено удалять не свою карточку'));
+    if (err.name === 'FordibbenError' && req.params.cardId !== req.user._id) return next(new FordibbenError('Запрещено удалять не свою карточку'));
     next(err);
   }
 };
