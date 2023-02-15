@@ -120,10 +120,8 @@ const validateCardBody = celebrate({
 
 const validateCardId = celebrate({
   params: {
-    cardId: Joi.string().required().min(2).max(30)
+    cardId: Joi.objectId().required()
       .messages({
-        'string.min': 'Минимальная длинна id карточки - 2',
-        'string.max': 'Максимальная длинна id карточки - 30',
         'any.required': 'Id карточки не указан',
       }),
   },
