@@ -33,7 +33,7 @@ module.exports.getUserById = async (req, res, next) => {
       throw new NotFoundError(`Пользователь с id '${req.params.userId}' не найден`);
     }
   } catch (err) {
-    if (err.name === 'CastError') return next(new CastError('Невалидный ID'));
+    if (err.name === 'CastError') return next(new CastError(err.message));
     next(err);
   }
 };

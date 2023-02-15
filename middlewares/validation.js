@@ -1,12 +1,12 @@
 const { celebrate, Joi } = require('celebrate');
 const validator = require('validator');
+Joi.objectId = require('joi-objectid')(Joi);
 
 const validateUserId = celebrate({
   params: {
-    userId: Joi.string().required().min(2).max(30)
+    userId: Joi.objectId().required().valid(Joi.ref('$params.userId'))
       .messages({
-        'string.min': 'Минимальная длинна id пользователя - 2',
-        'string.max': 'Максимальная длинна id пользователя - 30',
+        'string.base': 'Поле userId должно соответсвовать формату ObjectId',
         'any.required': 'Id пользователя не указан',
       }),
   },
