@@ -4,7 +4,7 @@ Joi.objectId = require('joi-objectid')(Joi);
 
 const validateUserId = celebrate({
   params: {
-    userId: Joi.objectId().required().valid(Joi.ref('$params.userId'))
+    userId: Joi.objectId().required()
       .messages({
         'string.base': 'Поле userId должно соответсвовать формату ObjectId',
         'any.required': 'Id пользователя не указан',
