@@ -6,7 +6,6 @@ const validateUserId = celebrate({
   params: {
     userId: Joi.objectId().required()
       .messages({
-        'string.base': 'Поле userId должно соответсвовать формату ObjectId',
         'any.required': 'Id пользователя не указан',
       }),
   },
