@@ -5,6 +5,7 @@ const User = require('../models/user');
 const NotFoundError = require('../errors/NotFoundError');
 const CastError = require('../errors/CastError');
 const ConflictingRequestError = require('../errors/ConflictingRequestError');
+const UnauthorizedError = require('../errors/UnauthorizedError');
 const {
   CODE_OK,
   CODE_CREATED,
@@ -109,11 +110,11 @@ module.exports.login = async (req, res, next) => {
   try {
     const user = await User.findOne({ email }).select('+password');
     if (!user) {
-      throw new NotFoundError('Неправильные почта или пароль');
+      throw new UnauthorizedError('Неправильные почта или пароль');
     } else {
       const matched = await bcrypt.compare(password, user.password);
       if (!matched) {
-        throw new NotFoundError('Неправильные почта или пароль');
+        throw new UnauthorizedError('Неправильные почта или пароль');
       } else {
         const token = jwt.sign(
           { _id: user._id },
