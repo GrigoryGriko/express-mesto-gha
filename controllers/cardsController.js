@@ -41,13 +41,13 @@ module.exports.deleteCardById = async (req, res, next) => {
   try {
     const card = await Card.findByIdAndRemove(req.params.cardId);
     if (card) {
-      res.status(CODE_OK).send({ card });
+      if (card.owner !== req.user._id) throw new FordibbenError('Запрещено удалять чужую карточку');
+      else res.status(CODE_OK).send({ card });
     } else {
       throw new NotFoundError(`Карточка с id '${req.params.cardId}' не найдена`);
     }
   } catch (err) {
     if (err.name === 'CastError') return next(new CastError('Невалидный ID'));
-    if (err.name === 'FordibbenError' && req.params.cardId !== req.user._id) return next(new FordibbenError('Запрещено удалять не свою карточку'));
     next(err);
   }
 };
