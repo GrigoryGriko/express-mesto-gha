@@ -140,11 +140,11 @@ module.exports.login = async (req, res, next) => {
 
 module.exports.createUser = async (req, res, next) => {
   const {
+    email,
+    password,
     name,
     about,
     avatar,
-    email,
-    password,
   } = req.body;
 
   if (!email || !password) return next(new CastError('Не все поля заполнены'));
@@ -153,11 +153,11 @@ module.exports.createUser = async (req, res, next) => {
     const hash = await bcrypt.hash(password, 12);
     if (hash) {
       const { password: _, ...user } = await User.create({
+        email,
+        password: hash,
         name,
         about,
         avatar,
-        email,
-        password: hash,
       });
 
       if (user) {
