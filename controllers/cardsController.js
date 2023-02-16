@@ -44,7 +44,7 @@ module.exports.deleteCardById = async (req, res, next) => {
       if (req.user._id.toString() !== card.owner.toString()) {
         throw new FordibbenError('Запрещено удалять чужую карточку');
       } else {
-        return Card.deleteOne(req.params.cardId)
+        return Card.findByIdAndRemove(req.params.cardId)
           .then(
             res.status(CODE_OK).send({ card }),
           );
