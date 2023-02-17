@@ -21,6 +21,7 @@ module.exports.getAllCards = async (req, res, next) => {
   }
 };
 
+
 module.exports.createCard = async (req, res, next) => {
   const { name, link } = req.body;
 
