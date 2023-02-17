@@ -25,10 +25,6 @@ app.use(express.urlencoded({ extended: true }));
 
 mongoose.connect('mongodb://localhost:27017/mestodb');
 
-app.use((req, res) => {
-  res.status(CODE_NOTFOUND).send({ message: 'Данный ресурс не найден' });
-});
-
 app.post('/signin', validateUserLogin, login);
 app.post('/signup', validateUserRegister, createUser);
 
@@ -42,6 +38,10 @@ app.use('/usersRouter', require('./routes/usersRouter'));
 
 app.use(errors());
 app.use(errorHandler);
+
+app.use((req, res) => {
+  res.status(CODE_NOTFOUND).send({ message: 'Данный ресурс не найден' });
+});
 
 app.listen(PORT, () => {
   console.log(`Сервер работает (порт: ${PORT})`);
