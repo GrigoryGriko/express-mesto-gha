@@ -152,7 +152,7 @@ module.exports.createUser = async (req, res, next) => {
   try {
     const hash = await bcrypt.hash(password, 12);
     if (hash) {
-      const { password: _, ...user } = await User.create({
+      const user = await User.create({
         email,
         password: hash,
         name,
@@ -161,7 +161,12 @@ module.exports.createUser = async (req, res, next) => {
       });
 
       if (user) {
-        res.status(CODE_CREATED).send({ user });
+        res.status(CODE_CREATED).send({
+          email,
+          name,
+          about,
+          avatar,
+        });
       } else {
         throw new NotFoundError('Пользователи не найдены');
       }
