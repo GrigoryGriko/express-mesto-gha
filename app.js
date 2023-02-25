@@ -5,7 +5,6 @@ const usersRouter = require('./routes/usersRouter');
 const cardsRouter = require('./routes/cardsRouter');
 const auth = require('./middlewares/auth');
 const { CODE_NOTFOUND } = require('./constants/constants');
-const { requestLogger, errorLogger } = require('./middlewares/logger');
 
 const errorHandler = require('./middlewares/errorHandler');
 const {
@@ -26,8 +25,6 @@ app.use(express.urlencoded({ extended: true }));
 
 mongoose.connect('mongodb://localhost:27017/mestodb');
 
-app.use(requestLogger);
-
 app.post('/signin', validateUserLogin, login);
 app.post('/signup', validateUserRegister, createUser);
 
@@ -38,8 +35,6 @@ app.use('/users', usersRouter);
 app.use('/cards', cardsRouter);
 
 app.use('/usersRouter', require('./routes/usersRouter'));
-
-app.use(errorLogger);
 
 app.use(errors());
 app.use(errorHandler);
