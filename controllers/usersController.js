@@ -129,7 +129,7 @@ module.exports.login = async (req, res, next) => {
             sameSite: true,
           });
 
-        res.status(CODE_OK).send({ user });
+        res.status(CODE_OK).send({ message: 'Вы успешно авторизованы' });
       }
     }
   } catch (err) {

@@ -10,9 +10,9 @@ const {
 
 module.exports.getAllCards = async (req, res, next) => {
   try {
-    const card = await Card.find({}).populate(['owner', 'likes']);
+    const card = await Card.find({});
     if (card) {
-      res.status(CODE_OK).send({ card });
+      res.send({ card });
     } else {
       throw new NotFoundError('Карточки не найдены');
     }
