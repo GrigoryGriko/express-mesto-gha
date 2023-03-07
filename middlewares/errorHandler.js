@@ -3,9 +3,8 @@ const { CODE_SERVERERROR } = require('../constants/constants');
 
 const errorHandler = (err, req, res, next) => {
   const statusCode = err.errorCode || CODE_SERVERERROR;
-  const message = err.message || 'Ошибка на стороне сервера';
+  const message = statusCode === 500 ? 'На сервере произошла ошибка' : err.message;
   res.status(statusCode).send({ message });
-
   next();
 };
 
