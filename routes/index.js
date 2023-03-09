@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const { errors } = require('celebrate');
+const cookieParser = require('cookie-parser');
 
 const errorHandler = require('../middlewares/errorHandler');
 const usersRouter = require('./usersRouter');
@@ -15,11 +16,13 @@ const {
   createUser,
 } = require('../controllers/usersController');
 
+
 router.post('/signin', validateUserLogin, login);
 router.post('/signup', validateUserRegister, createUser);
 router.use(auth);
 router.use('/users', usersRouter);
 router.use('/cards', cardsRouter);
+router.use(cookieParser());
 
 router.use((req, res, next) => {
   next(new NotFoundError('Данный ресурс не найден'));
