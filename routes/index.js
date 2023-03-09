@@ -21,11 +21,10 @@ router.use(auth);
 router.use('/users', usersRouter);
 router.use('/cards', cardsRouter);
 
-router.use(errors());
-router.use(errorHandler);
-
 router.use((req, res, next) => {
   next(new NotFoundError('Данный ресурс не найден'));
 });
+router.use(errors());
+router.use(errorHandler);
 
 module.exports = router;
