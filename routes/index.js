@@ -22,6 +22,9 @@ router.post('/signup', validateUserRegister, createUser);
 router.use(auth);
 router.use('/users', usersRouter);
 router.use('/cards', cardsRouter);
+router.get('/signout', (req, res) => {
+  res.clearCookie('jwt').send({ message: 'Выход' });
+});
 
 router.use((req, res, next) => {
   next(new NotFoundError('Данный ресурс не найден'));
