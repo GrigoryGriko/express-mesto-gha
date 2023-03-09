@@ -16,13 +16,12 @@ const {
   createUser,
 } = require('../controllers/usersController');
 
-
+router.use(cookieParser());
 router.post('/signin', validateUserLogin, login);
 router.post('/signup', validateUserRegister, createUser);
 router.use(auth);
 router.use('/users', usersRouter);
 router.use('/cards', cardsRouter);
-router.use(cookieParser());
 
 router.use((req, res, next) => {
   next(new NotFoundError('Данный ресурс не найден'));
