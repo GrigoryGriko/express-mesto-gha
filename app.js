@@ -30,13 +30,10 @@ mongoose.connect('mongodb://localhost:27017/mestodb');
 app.post('/signin', validateUserLogin, login);
 app.post('/signup', validateUserRegister, createUser);
 
-app.post('/usersRouter', auth);
 app.use(auth);
 
 app.use('/users', usersRouter);
 app.use('/cards', cardsRouter);
-
-app.use('/usersRouter', require('./routes/usersRouter'));
 
 app.use(errors());
 app.use(errorHandler);
